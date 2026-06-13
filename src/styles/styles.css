@@ -66,13 +66,55 @@
 /* ============================================================
    N2 — AMBIENT BUBBLE
    ============================================================ */
-.bubble-root { position: fixed; right: 24px; bottom: 24px; z-index: var(--z-bubble); display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-.bubble-launcher { position: relative; width: 60px; height: 60px; border: none; background: transparent; cursor: pointer; padding: 0; align-self: flex-end; }
-.bubble-orb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--accent); color: #fff; border-radius: 46% 54% 52% 48% / 50% 47% 53% 50%; box-shadow: var(--shadow-float); animation: breathe 5.5s var(--ease-soft) infinite; }
-.bubble-launcher.no-morph .bubble-orb { animation: none; border-radius: 50%; }
-.bubble-launcher:hover .bubble-orb { transform: scale(1.05); }
-.bubble-launcher.is-awake .bubble-orb { box-shadow: var(--shadow-float), 0 0 0 4px var(--accent-ring); }
-.bubble-spark { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: ring 2.2s var(--ease) infinite; }
+.bubble-root { position: fixed; right: 24px; bottom: 24px; z-index: var(--z-bubble); display: flex; flex-direction: column; align-items: flex-end; }
+
+/* one element that MORPHS between the orb launcher and an open message card */
+.bubble-morph {
+  position: relative;
+  width: 60px; height: 60px;
+  display: block;
+  border: none; padding: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 46% 54% 52% 48% / 50% 47% 53% 50%;
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+  cursor: pointer;
+  transform-origin: bottom right;
+  animation: breathe 5.5s var(--ease-soft) infinite;
+  transition: width var(--t-slow) var(--ease), height var(--t-slow) var(--ease),
+              border-radius var(--t-slow) var(--ease), background-color var(--t-slow) var(--ease),
+              color var(--t-base) var(--ease);
+}
+.bubble-morph.is-awake { box-shadow: var(--shadow-float), 0 0 0 4px var(--accent-ring); }
+.bubble-morph:not(.is-open):hover { transform: scale(1.05); }
+
+/* expanded: the orb blooms into a glass message card */
+.bubble-morph.is-open {
+  width: 320px; height: 60px;            /* height overridden inline by the measured value */
+  border-radius: 22px;
+  background: var(--glass-bg-strong);
+  color: var(--ink-1);
+  cursor: default;
+  animation: none;
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  backdrop-filter: blur(30px) saturate(1.8);
+}
+.bubble-morph.is-semi { width: 300px; }
+.bubble-morph.is-reduced { animation: none; border-radius: 50%; }
+.bubble-morph.is-reduced.is-open { border-radius: 18px; }
+
+/* the orb's centred sparkle — fades out as the card opens */
+.bm-orb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity var(--t-base) var(--ease); }
+.bubble-morph.is-open .bm-orb { opacity: 0; }
+
+/* the card content — fades/reveals just after the shape has grown */
+.bm-panel { opacity: 0; transition: opacity var(--t-base) var(--ease); }
+.bubble-morph.is-open .bm-panel { opacity: 1; transition-delay: 130ms; }
+
+/* awake ring — sibling of the morph so overflow:hidden doesn't clip it */
+.bubble-spark { position: absolute; right: -6px; bottom: -6px; width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: ring 2.2s var(--ease) infinite; pointer-events: none; }
 @keyframes breathe {
   0%,100% { border-radius: 46% 54% 52% 48% / 50% 47% 53% 50%; transform: scale(1); }
   33% { border-radius: 54% 46% 47% 53% / 47% 53% 47% 53%; transform: scale(1.025); }
@@ -80,8 +122,21 @@
 }
 @keyframes ring { 0% { opacity: .55; transform: scale(.85); } 70% { opacity: 0; transform: scale(1.35); } 100% { opacity: 0; } }
 
-.bubble-teaser { width: 300px; padding: 13px 14px; border-radius: 18px; box-shadow: var(--shadow-float); display: flex; flex-direction: column; animation: pop-up var(--t-base) var(--ease) both; }
-.bubble-semi { width: 290px; border-radius: 18px; box-shadow: var(--shadow-float); overflow: hidden; animation: pop-up var(--t-base) var(--ease) both; }
+/* ----- content revealed inside the morph ----- */
+.bm-teaser { width: 320px; padding: 13px 14px; display: flex; flex-direction: column; }
+.bm-spon { align-self: flex-start; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--sponsored-fg); background: var(--sponsored-bg); border: 1px solid var(--sponsored-line); padding: 1px 7px; border-radius: 999px; }
+.bm-teaser-head { display: flex; align-items: flex-start; gap: 9px; }
+.bm-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bm-line { flex: 1; text-align: left; border: none; background: transparent; cursor: pointer; padding: 0; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink-1); line-height: 1.35; }
+.bm-x { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: none; background: transparent; color: var(--ink-4); cursor: pointer; flex-shrink: 0; }
+.bm-actions { display: flex; gap: 8px; margin-top: 10px; padding-left: 35px; }
+.bm-go { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-agent); font-size: 12.5px; font-weight: 600; color: #fff; background: var(--accent); border: none; border-radius: 999px; padding: 7px 13px; cursor: pointer; }
+.bm-semi { width: 300px; }
+.bm-semi-head { display: flex; align-items: center; gap: 9px; padding: 13px 14px 9px; }
+.bm-semi-titles { flex: 1; }
+.bm-semi-titles .t1 { font-weight: 700; font-size: 13px; color: var(--ink-1); }
+.bm-semi-titles .t2 { font-size: 11px; color: var(--ink-3); }
+.bm-semi-list { display: flex; flex-direction: column; gap: 6px; padding: 2px 10px 12px; }
 .semi-entry { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 11px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; transition: background var(--t-fast); }
 .semi-entry:hover { background: var(--accent-wash); border-color: var(--accent-ring); }
 @keyframes pop-up { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }

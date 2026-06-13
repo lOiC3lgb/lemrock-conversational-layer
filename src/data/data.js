@@ -143,6 +143,11 @@ export const FLOWS = {
     message: "Wrist optical heart-rate is convenient but lags on sharp climbs and in the cold. For steady zone-2 base training it's fine; if you train by precise zones, a chest strap is still more honest.",
     suggestedFollowups: [], offerRef: null
   },
+  "flow-nutrition": {
+    flowId: "flow-nutrition", title: "Fuelling on the run",
+    message: "Under an hour, water is enough. Past that, aim for 20–30 g of carbohydrate every half hour — a gel, a few chews, or half a banana. The one real rule: practise it on training runs, never debut a new flavour on race morning.",
+    suggestedFollowups: [], offerRef: "off-nutrition"
+  },
   "flow-summarize-plan": {
     flowId: "flow-summarize-plan", title: "8-week plan, in 20 seconds",
     message: "Weeks 1–2: three easy runs, walk the climbs. Weeks 3–5: add one hilly run and a little D+ each week. Weeks 6–7: a longer weekend outing, keep one full rest day. Week 8: ease off, then run your first trail relaxed. Rule of thumb: only one hard thing per week.",
@@ -271,9 +276,14 @@ export const CONFIG = {
   }
 };
 
-// teaser scripts the ambient bubble can surface, tied to a segment
+// teaser scripts the ambient bubble can surface, tied to a segment.
+// One per major section, so the bubble morphs open with a line that
+// matches where the reader currently is in the page (scroll-contextual).
 export const TEASERS = [
-  { id: "tz-watch", segmentId: "seg-montre", line: "Comparing 3 GPS watches?", flowId: "flow-montre-compare", sponsored: false },
-  { id: "tz-plan",  segmentId: "seg-plan",  line: "Want the 8-week plan in 20 seconds?", flowId: "flow-summarize-plan", sponsored: false },
-  { id: "tz-shoe",  segmentId: "seg-materiel", line: "Not sure which trail shoe? Saltus can help.", flowId: "flow-chaussure-sponsored", sponsored: true }
+  { id: "tz-shoe",  segmentId: "seg-materiel",   line: "Not sure which trail shoe? Saltus can help.", flowId: "flow-chaussure-sponsored", sponsored: true },
+  { id: "tz-dplus", segmentId: "seg-denivele",   line: "“D+” keeps coming up — want it in one line?", flowId: "flow-dplus", sponsored: false },
+  { id: "tz-fuel",  segmentId: "seg-nutrition",  line: "How much should you actually eat on the run?", flowId: "flow-nutrition", sponsored: false },
+  { id: "tz-watch", segmentId: "seg-montre",     line: "Comparing 3 GPS watches?", flowId: "flow-montre-compare", sponsored: false },
+  { id: "tz-plan",  segmentId: "seg-plan",       line: "Want the 8-week plan in 20 seconds?", flowId: "flow-summarize-plan", sponsored: false },
+  { id: "tz-find",  segmentId: "seg-conclusion", line: "Ready to find your first pair of shoes?", flowId: "flow-recommend-shoes", sponsored: false }
 ];

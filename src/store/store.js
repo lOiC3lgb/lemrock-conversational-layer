@@ -147,7 +147,9 @@ function createStore() {
       const t = state.teaser;
       if (!t) return;
       emit("teaser.accepted", { teaserId: t.id });
-      api.openAgent({ flowId: t.flowId, triggerSource: "teaser", segmentId: t.segmentId });
+      const flow = DEMO.FLOWS[t.flowId];
+      if (flow && flow.immersive) api.openImmersive({ kind: flow.immersive, flowId: t.flowId, segmentId: t.segmentId });
+      else api.openAgent({ flowId: t.flowId, triggerSource: "teaser", segmentId: t.segmentId });
       set({ bubble: "dormant", teaser: null });
     },
     openSemi() {
@@ -212,6 +214,10 @@ function createStore() {
 }
 
 export const PresenceStore = createStore();
+
+// expose the store globally (matches the original prototype) — handy for
+// debugging the presence state machines from the console.
+if (typeof window !== "undefined") window.PresenceStore = PresenceStore;
 
 export function usePresence() {
   const s = useSyncExternalStore(PresenceStore.subscribe, PresenceStore.getState);

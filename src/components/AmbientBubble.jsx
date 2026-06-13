@@ -1,10 +1,12 @@
 /* ============================================================
    AmbientBubble.jsx — N2 (PRD §7.2)
-   A living launcher: dormant -> awake -> teaser -> semiOpen -> open.
-   Never open at load. Breathes (morph), never blinks, never blocks text.
+   A living launcher that MORPHS open. One element transforms from the
+   compact orb into a glass message card (dark blob → light card),
+   surfacing a line tied to the segment you're currently reading.
+   Never open at load. Breathes, never blinks, never blocks text.
    Stays a compact launcher (never a large sticky — Better Ads, §10).
    ============================================================ */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { DEMO } from "../data/index.js";
 import { AgentMark } from "./AgentMark.jsx";
 
@@ -14,11 +16,67 @@ const SEMI_ENTRIES = [
   { id: "e-shoe", label: "Find your shoe", icon: "ph-sneaker-move", flowId: "flow-recommend-shoes" }
 ];
 
+// ---- the contextual teaser card (revealed inside the morph) ----
+function TeaserPanel({ teaser, store }) {
+  return (
+    <div className="bm-teaser">
+      {teaser.sponsored && (
+        <span className="bm-spon"><i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsored</span>
+      )}
+      <div className="bm-teaser-head">
+        <span className="bm-avatar"><AgentMark size={15} color="#fff" /></span>
+        <button className="bm-line" onClick={() => store.acceptTeaser()}>{teaser.line}</button>
+        <button className="bm-x" onClick={() => store.dismissTeaser()} aria-label="Dismiss"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
+      </div>
+      <div className="bm-actions">
+        <button className="bm-go" onClick={() => store.acceptTeaser()}>Show me <i className="ph ph-arrow-right" style={{ fontSize: 12 }}></i></button>
+      </div>
+    </div>
+  );
+}
+
+// ---- the compact shortcut menu (revealed inside the morph) ----
+function SemiPanel({ store, pickEntry }) {
+  return (
+    <div className="bm-semi">
+      <div className="bm-semi-head">
+        <span className="bm-avatar"><AgentMark size={13} color="#fff" /></span>
+        <div className="bm-semi-titles">
+          <div className="t1">Companion</div>
+          <div className="t2">Here to help while you read</div>
+        </div>
+        <button className="bm-x" onClick={() => store.setBubble("dormant")} aria-label="Close"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
+      </div>
+      <div className="bm-semi-list">
+        {SEMI_ENTRIES.map((e) => (
+          <button key={e.id} onClick={() => pickEntry(e)} className="semi-entry">
+            <i className={"ph " + e.icon} style={{ fontSize: 17, color: "var(--ink-3)" }}></i>
+            <span style={{ flex: 1, textAlign: "left", fontSize: 13.5, fontWeight: 600, color: "var(--ink-1)" }}>{e.label}</span>
+            <i className="ph ph-arrow-up-right" style={{ fontSize: 14, color: "var(--ink-4)" }}></i>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function AmbientBubble({ state, store }) {
   if (!state.levels.N2) return null;
   const b = state.bubble;
   const teaser = state.teaser;
+  const reduced = state.reducedMotion;
   const retractRef = useRef(null);
+  const panelRef = useRef(null);
+  const [h, setH] = useState(null);
+
+  const isOpen = b === "teaser" || b === "semiOpen";
+  const collapsed = b === "dormant" || b === "awake";
+
+  // measure the revealed content so the orb morphs to exactly its height
+  useLayoutEffect(() => {
+    if (isOpen && panelRef.current) setH(panelRef.current.scrollHeight + 2);
+    else setH(null);
+  }, [b, teaser && teaser.id]);
 
   // teaser auto-retract if ignored (PRD §7.2)
   useEffect(() => {
@@ -48,69 +106,31 @@ export function AmbientBubble({ state, store }) {
     else store.openAgent({ flowId: entry.flowId, triggerSource: "semi", segmentId: null });
   };
 
-  const reduced = state.reducedMotion;
+  const cls = "bubble-morph"
+    + (b === "awake" ? " is-awake" : "")
+    + (isOpen ? " is-open" : "")
+    + (b === "semiOpen" ? " is-semi" : "")
+    + (reduced ? " is-reduced" : "");
 
   return (
     <div className="bubble-root" aria-live="polite">
-      {/* TEASER — one contextual line */}
-      {b === "teaser" && teaser && (
-        <div className="bubble-teaser glass" role="status">
-          {teaser.sponsored && (
-            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--sponsored-fg)", background: "var(--sponsored-bg)", border: "1px solid var(--sponsored-line)", padding: "1px 7px", borderRadius: "999px", alignSelf: "flex-start", marginBottom: 6, display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsored
-            </span>
-          )}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-            <AgentMark size={15} color="var(--accent)" />
-            <button onClick={() => store.acceptTeaser()} style={{ flex: 1, textAlign: "left", border: "none", background: "transparent", cursor: "pointer", padding: 0, font: "inherit" }}>
-              <span style={{ fontSize: 13.5, fontWeight: 600, color: "var(--ink-1)", lineHeight: 1.35 }}>{teaser.line}</span>
-            </button>
-            <button onClick={() => store.dismissTeaser()} style={teaserClose} aria-label="Dismiss"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 10, paddingLeft: 24 }}>
-            <button onClick={() => store.acceptTeaser()} style={teaserGo}>Show me <i className="ph ph-arrow-right" style={{ fontSize: 12 }}></i></button>
-          </div>
-        </div>
-      )}
-
-      {/* SEMI-OPEN — compact menu of entries (not the full chat) */}
-      {b === "semiOpen" && (
-        <div className="bubble-semi glass" role="dialog" aria-label="Companion shortcuts">
-          <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "13px 14px 9px" }}>
-            <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center" }}><AgentMark size={13} color="#fff" /></div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: "var(--ink-1)" }}>Companion</div>
-              <div style={{ fontSize: 11, color: "var(--ink-3)" }}>Here to help while you read</div>
-            </div>
-            <button onClick={() => store.setBubble("dormant")} style={teaserClose} aria-label="Close"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "2px 10px 12px" }}>
-            {SEMI_ENTRIES.map((e) => (
-              <button key={e.id} onClick={() => pickEntry(e)} className="semi-entry">
-                <i className={"ph " + e.icon} style={{ fontSize: 17, color: "var(--ink-3)" }}></i>
-                <span style={{ flex: 1, textAlign: "left", fontSize: 13.5, fontWeight: 600, color: "var(--ink-1)" }}>{e.label}</span>
-                <i className="ph ph-arrow-up-right" style={{ fontSize: 14, color: "var(--ink-4)" }}></i>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* LAUNCHER — always present (dormant/awake). Compact. */}
-      <button
-        onClick={onLauncherClick}
-        className={"bubble-launcher" + (b === "awake" ? " is-awake" : "") + (reduced ? " no-morph" : "")}
-        aria-label="Open reading companion"
+      <div
+        className={cls}
+        style={isOpen && h != null ? { height: h } : undefined}
+        role={collapsed ? "button" : "dialog"}
+        tabIndex={collapsed ? 0 : -1}
+        aria-label={collapsed ? "Open reading companion" : "Companion"}
         aria-expanded={b === "semiOpen"}
+        onClick={collapsed ? onLauncherClick : undefined}
+        onKeyDown={collapsed ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onLauncherClick(); } } : undefined}
       >
-        <span className="bubble-orb">
-          <AgentMark size={22} color="#fff" />
-        </span>
-        {b === "awake" && <span className="bubble-spark" aria-hidden="true"></span>}
-      </button>
+        <span className="bm-orb" aria-hidden="true"><AgentMark size={22} color="#fff" /></span>
+        <div className="bm-panel" ref={panelRef} aria-hidden={collapsed}>
+          {b === "teaser" && teaser && <TeaserPanel teaser={teaser} store={store} />}
+          {b === "semiOpen" && <SemiPanel store={store} pickEntry={pickEntry} />}
+        </div>
+      </div>
+      {b === "awake" && <span className="bubble-spark" aria-hidden="true"></span>}
     </div>
   );
 }
-
-const teaserClose = { display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: "50%", border: "none", background: "transparent", color: "var(--ink-4)", cursor: "pointer", flexShrink: 0 };
-const teaserGo = { display: "inline-flex", alignItems: "center", gap: 5, fontFamily: "var(--font-agent)", fontSize: 12.5, fontWeight: 600, color: "#fff", background: "var(--accent)", border: "none", borderRadius: "999px", padding: "7px 13px", cursor: "pointer" };
