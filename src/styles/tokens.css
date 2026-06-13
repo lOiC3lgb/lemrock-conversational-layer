@@ -1,0 +1,149 @@
+/* ============================================================
+   Trail Companion Demo — design tokens
+   Editorial layer = Newsreader (serif).  Agent layer = Plus Jakarta Sans.
+   Neutral palette grounded in GBX (coral kept out by default, toggleable).
+   ============================================================ */
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype-variations"),
+       url("/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+/* Newsreader (editorial serif) is loaded via <link> in index.html. */
+
+:root {
+  /* ---- agent / editorial font split ---- */
+  --font-agent:     "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-editorial: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono:      "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- neutrals (GBX) ---- */
+  --bg:            #FFFFFF;
+  --paper:         #FCFCFB;   /* warm reading paper */
+  --canvas:        #F4F4F2;   /* the dotted workspace behind the agent */
+  --surface:       #FFFFFF;
+  --border:        #ECECEC;
+  --border-strong: #DBDBD9;
+  --divider:       #F1F1F0;
+
+  --ink-1: #1A1A19;   /* headlines */
+  --ink-2: #44443F;   /* body */
+  --ink-3: #76766F;   /* meta */
+  --ink-4: #A6A69E;   /* hints */
+  --ink-inverse: #FFFFFF;
+
+  /* ---- agent accent: neutral graphite by default ---- */
+  --accent:        #2B2B28;
+  --accent-soft:   #6B6B64;
+  --accent-wash:   rgba(40,40,36,0.05);
+  --accent-ring:   rgba(40,40,36,0.14);
+
+  /* ---- coral (GBX brand) — only surfaced when coral accent toggled on ---- */
+  --coral-500: #FF5C58;
+  --coral-700: #CC3D3A;
+  --coral-wash: #FFF6F4;
+
+  /* ---- sponsored marker (always warm-neutral, never editorial) ---- */
+  --sponsored-fg: #8A6D3B;
+  --sponsored-bg: #FBF6EC;
+  --sponsored-line: #EADFC6;
+
+  --success: #1F9D55;
+  --success-bg: #E7F6EC;
+
+  /* ---- glass (richer, more translucent) ---- */
+  --glass-bg: rgba(252,252,251,0.62);
+  --glass-bg-strong: rgba(252,252,251,0.78);
+  --glass-border: rgba(255,255,255,0.6);
+  --glass-stroke: rgba(20,20,18,0.07);
+  --glass-sheen: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 42%);
+
+  /* ---- radii ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --r-pill: 999px;
+
+  /* ---- spacing ---- */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px;
+  --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px;
+
+  /* ---- shadows (whisper-soft, GBX house) ---- */
+  --shadow-1: 0 1px 2px rgba(15,15,15,.04), 0 2px 10px rgba(15,15,15,.05);
+  --shadow-2: 0 6px 24px rgba(15,15,15,.10);
+  --shadow-3: 0 20px 60px rgba(15,15,15,.18);
+  --shadow-float: 0 12px 40px rgba(20,20,18,.14), 0 2px 8px rgba(20,20,18,.06);
+
+  /* ---- motion (perceptual requirements from PRD) ---- */
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --ease-soft: cubic-bezier(.33,.1,.25,1);
+  --t-fast: 140ms;
+  --t-base: 240ms;
+  --t-slow: 420ms;
+
+  --read-col: 680px;
+}
+
+/* coral-accent variant flips the agent accent to GBX coral */
+:root[data-accent="coral"] {
+  --accent:      var(--coral-500);
+  --accent-soft: var(--coral-700);
+  --accent-wash: var(--coral-wash);
+  --accent-ring: rgba(255,92,88,0.22);
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-agent);
+  background: var(--canvas);
+  color: var(--ink-2);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* reduced-motion: PRD requires every state reachable with no animation */
+:root[data-reduced="on"] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+::selection { background: var(--accent-wash); }
+
+/* dotted canvas backdrop, like the reference */
+.dot-canvas {
+  background-color: var(--canvas);
+  background-image: radial-gradient(rgba(20,20,18,0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* shared focus ring for a11y (PRD §10) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.glass {
+  position: relative;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(30px) saturate(1.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+.glass::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: var(--glass-sheen); opacity: .8; mix-blend-mode: screen;
+}
+
+/* scrollbars inside agent surfaces */
+.thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: rgba(20,20,18,.14); border-radius: 99px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }

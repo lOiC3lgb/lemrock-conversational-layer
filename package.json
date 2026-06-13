@@ -1,0 +1,20 @@
+{
+  "name": "lemrock-conversational-layer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Conversational media layer — trail running demonstrator (5 presence levels, native upsell, governance)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

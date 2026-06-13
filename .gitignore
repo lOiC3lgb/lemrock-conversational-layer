@@ -1,0 +1,11 @@
+node_modules
+dist
+*.local
+.DS_Store
+.vercel
+
+# design handoff bundle (internal reference — PRD + chat transcript, kept local)
+/lemrock/
+
+# local machine settings (permissions allowlist, etc.)
+.claude/settings.local.json
