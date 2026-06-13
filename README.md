@@ -1,5 +1,7 @@
 # Lemrock — Conversational Media Layer (Trail Demonstrator)
 
+**Live demo → https://lemrock-conversational-layer.vercel.app**
+
 A working demonstrator of a **conversational layer** that mounts on top of an existing
 media article. It proves three things from the product brief: it can **drive interaction**
 with an agent without reducing it to a static bottom-right chatbot, **monetise natively**
