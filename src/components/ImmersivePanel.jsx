@@ -10,8 +10,8 @@ import { AgentMark } from "./AgentMark.jsx";
 import { Conversation, convResolver } from "./Chat.jsx";
 
 const TITLES = {
-  finder: { t: "Find your shoe", i: "ph-sneaker-move" },
-  comparator: { t: "Compare GPS watches", i: "ph-scales" }
+  finder: { t: "Trouve ta chaussure", i: "ph-sneaker-move" },
+  comparator: { t: "Comparer les montres GPS", i: "ph-scales" }
 };
 
 export function ImmersivePanel({ state, store }) {
@@ -39,11 +39,11 @@ export function ImmersivePanel({ state, store }) {
             </span>
             <div>
               <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink-1)" }}>{meta.t}</div>
-              <div style={{ fontSize: 11.5, color: "var(--ink-3)" }}>Conversation · your article is paused behind</div>
+              <div style={{ fontSize: 11.5, color: "var(--ink-3)" }}>Conversation · votre article est en pause derrière</div>
             </div>
           </div>
           <button onClick={() => store.closeImmersive()} className="n5-back">
-            <i className="ph ph-arrow-u-down-left" style={{ fontSize: 15 }}></i> Back to reading
+            <i className="ph ph-arrow-u-down-left" style={{ fontSize: 15 }}></i> Retour à la lecture
           </button>
         </header>
         <Conversation resolve={convResolver(im.kind)} startId="start" store={store} key={im.kind} />

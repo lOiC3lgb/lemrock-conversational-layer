@@ -1,105 +1,105 @@
 /* ============================================================
-   conversations.js — node-based dialogue scripts for N5 (PRD §7.5)
-   Conversation-first: the agent talks, the reader replies with quick
-   replies, product cards are woven into the thread.
-   Node = { agent:[ "text" | {card} | {compare:[ids]} ], options:[{label,to,ack?,set?,immersive?,reset?}] }
+   conversations.js — dialogues scriptés (nœuds) pour N5 (PRD §7.5)
+   Conversation d'abord : l'agent parle, le lecteur répond par des
+   réponses rapides, des cartes produit sont tissées dans le fil.
+   Nœud = { agent:[ "texte" | {card} | {compare:[ids]} ], options:[{label,to,ack?,set?,immersive?,reset?}] }
    ============================================================ */
 
 const FINDER = {
   start: {
     agent: [
-      "Let's find your first pair — just three quick questions, then a pick that actually fits you.",
-      "Where will you run most of the time?"
+      "Trouvons votre première paire — juste trois questions rapides, puis un choix qui vous va vraiment.",
+      "Où courez-vous le plus souvent ?"
     ],
     options: [
-      { label: "Smooth paths", ack: "Smooth ground — comfort with a bit of grip will do nicely.", set: { terrain: "smooth" }, to: "freq" },
-      { label: "Mixed trails", ack: "Mixed trails — so a versatile all-rounder.", set: { terrain: "mixed" }, to: "freq" },
-      { label: "Technical & muddy", ack: "Technical and muddy — then grip is the thing that matters most.", set: { terrain: "tech" }, to: "freq" }
+      { label: "Chemins roulants", ack: "Terrain roulant — du confort avec un peu d'accroche fera l'affaire.", set: { terrain: "smooth" }, to: "freq" },
+      { label: "Sentiers mixtes", ack: "Sentiers mixtes — donc une polyvalente.", set: { terrain: "mixed" }, to: "freq" },
+      { label: "Technique & boueux", ack: "Technique et boueux — alors l'accroche est ce qui compte le plus.", set: { terrain: "tech" }, to: "freq" }
     ]
   },
   freq: {
-    agent: ["Good. And how often will you realistically get out?"],
+    agent: ["Bien. Et à quelle fréquence sortirez-vous vraiment ?"],
     options: [
-      { label: "Once a week", ack: "Once a week — I'll lean toward durability over weight.", set: { freq: "1" }, to: "budget" },
-      { label: "2–3 times", ack: "Two or three times — a proper daily-driver, then.", set: { freq: "23" }, to: "budget" },
-      { label: "4+ times", ack: "Four-plus — you'll want something that survives the miles.", set: { freq: "4" }, to: "budget" }
+      { label: "Une fois/semaine", ack: "Une fois par semaine — je privilégie la durabilité au poids.", set: { freq: "1" }, to: "budget" },
+      { label: "2–3 fois", ack: "Deux ou trois fois — une vraie chaussure du quotidien, alors.", set: { freq: "23" }, to: "budget" },
+      { label: "4 fois et +", ack: "Quatre et plus — il faut que ça encaisse les kilomètres.", set: { freq: "4" }, to: "budget" }
     ]
   },
   budget: {
-    agent: ["Last one — what's your budget?"],
+    agent: ["Dernière question — votre budget ?"],
     options: [
-      { label: "Under $100", ack: "Tight budget, noted — fit first, frills later.", set: { budget: "low" }, to: "result" },
-      { label: "$100–180", ack: "That's the sweet spot for a first trail shoe.", set: { budget: "mid" }, to: "result" },
-      { label: "Flexible", ack: "Flexible — then we can prioritise the right ride.", set: { budget: "flex" }, to: "result" }
+      { label: "Moins de 100 €", ack: "Budget serré, noté — le chaussant d'abord, le superflu ensuite.", set: { budget: "low" }, to: "result" },
+      { label: "100–180 €", ack: "C'est le sweet spot pour une première chaussure de trail.", set: { budget: "mid" }, to: "result" },
+      { label: "Flexible", ack: "Flexible — on peut prioriser le bon ressenti, alors.", set: { budget: "flex" }, to: "result" }
     ]
   },
   result: {
     agent: [
-      "Putting that together — grippy, forgiving, built for soft ground. Here's the closest match. It's a sponsored pick, so I'm flagging it clearly, and there's an editorial alternative underneath.",
+      "En recoupant tout ça — accrocheuse, indulgente, faite pour le terrain meuble. Voici le meilleur match. C'est un choix sponsorisé, donc je le signale clairement, et il y a une alternative éditoriale en dessous.",
       { card: "off-shoeA" },
       { card: "off-hydration" },
-      "That's a suggestion, never a push — close any time and you're back exactly where you left off in the article."
+      "C'est une suggestion, jamais une obligation — fermez quand vous voulez et vous revenez exactement où vous étiez dans l'article."
     ],
     options: [
-      { label: "Why this one?", to: "why" },
-      { label: "Start over", to: "start", reset: true }
+      { label: "Pourquoi celle-ci ?", to: "why" },
+      { label: "Recommencer", to: "start", reset: true }
     ]
   },
   why: {
-    agent: ["The Ridge GTX runs a forgiving 6 mm drop with aggressive lugs — grip on soft, technical ground without punishing your legs on the descents. For a first muddy season it's the safe pair to learn on."],
-    options: [{ label: "Start over", to: "start", reset: true }]
+    agent: ["La Ridge GTX a un drop indulgent de 6 mm avec des crampons agressifs — de l'accroche sur terrain meuble et technique sans punir les jambes en descente. Pour une première saison boueuse, c'est la paire sûre pour apprendre."],
+    options: [{ label: "Recommencer", to: "start", reset: true }]
   }
 };
 
 const COMPARATOR = {
   start: {
     agent: [
-      "Happy to compare the three with you.",
-      "What matters most for your first GPS watch?"
+      "Avec plaisir, comparons les trois ensemble.",
+      "Qu'est-ce qui compte le plus pour votre première montre GPS ?"
     ],
     options: [
-      { label: "Battery life", to: "batt" },
-      { label: "Price", to: "price" },
-      { label: "GPS accuracy", to: "gps" },
-      { label: "Just show me all three", to: "all" }
+      { label: "Autonomie", to: "batt" },
+      { label: "Prix", to: "price" },
+      { label: "Précision GPS", to: "gps" },
+      { label: "Montre-les toutes les 3", to: "all" }
     ]
   },
   batt: {
     agent: [
-      "On battery, the Pace Labs Apex 2 leads — 38 hours of GPS tracking. Worth knowing it's the sponsored option, so I'm flagging it. The Northwind gives you a healthy 26 hours for a lot less money.",
+      "Côté autonomie, la Pace Labs Apex 2 mène — 38 heures de suivi GPS. À savoir, c'est l'option sponsorisée, donc je le signale. La Northwind offre un solide 26 heures pour bien moins cher.",
       { card: "off-watchA" },
       { card: "off-watchB" }
     ],
-    options: [{ label: "Which would you pick?", to: "pick" }, { label: "See all three", to: "all" }]
+    options: [{ label: "Tu prendrais laquelle ?", to: "pick" }, { label: "Voir les trois", to: "all" }]
   },
   price: {
     agent: [
-      "For price, the Cardo Run S is lightest and cheapest at $179 — lovely for shorter outings. The Northwind is $219 and does noticeably more.",
+      "Côté prix, la Cardo Run S est la plus légère et la moins chère à 179 € — parfaite pour les sorties courtes. La Northwind est à 219 € et en fait nettement plus.",
       { card: "off-watchC" },
       { card: "off-watchB" }
     ],
-    options: [{ label: "Which would you pick?", to: "pick" }, { label: "See all three", to: "all" }]
+    options: [{ label: "Tu prendrais laquelle ?", to: "pick" }, { label: "Voir les trois", to: "all" }]
   },
   gps: {
     agent: [
-      "For accuracy under tree cover, only the Pace Labs Apex 2 has dual-band GPS — it tracks far tighter on technical trails. It's the sponsored one, flagged here. The other two are single-band and perfectly fine on open ground.",
+      "Pour la précision sous couvert forestier, seule la Pace Labs Apex 2 a un GPS double-bande — elle suit bien plus finement en terrain technique. C'est la sponsorisée, signalée ici. Les deux autres sont mono-bande et très bien en terrain dégagé.",
       { card: "off-watchA" }
     ],
-    options: [{ label: "Which would you pick?", to: "pick" }, { label: "See all three", to: "all" }]
+    options: [{ label: "Tu prendrais laquelle ?", to: "pick" }, { label: "Voir les trois", to: "all" }]
   },
   all: {
     agent: [
-      "Here they are side by side — same criteria for all three, sponsored clearly marked.",
+      "Les voici côte à côte — mêmes critères pour les trois, sponsorisée clairement marquée.",
       { compare: ["off-watchA", "off-watchB", "off-watchC"] }
     ],
-    options: [{ label: "Which would you pick?", to: "pick" }]
+    options: [{ label: "Tu prendrais laquelle ?", to: "pick" }]
   },
   pick: {
     agent: [
-      "Honestly? For a first season I'd take the Northwind Trail 50 — it's the value all-rounder and you won't outgrow it for a while. Step up to the Pace Labs only if you'll run technical terrain often (and yes, that's the sponsored one — I'd rather you knew).",
+      "Honnêtement ? Pour une première saison, je prendrais la Northwind Trail 50 — c'est la polyvalente au bon prix et vous ne la dépasserez pas avant longtemps. Montez vers la Pace Labs seulement si vous courez souvent en terrain technique (et oui, c'est la sponsorisée — je préfère que vous le sachiez).",
       { card: "off-watchB" }
     ],
-    options: [{ label: "Start the comparison over", to: "start" }]
+    options: [{ label: "Recommencer la comparaison", to: "start" }]
   }
 };
 

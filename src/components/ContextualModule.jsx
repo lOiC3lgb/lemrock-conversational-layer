@@ -51,10 +51,10 @@ export function ContextualModule({ module, segmentId, state, store }) {
           <span style={{ display: "inline-flex", width: 22, height: 22, borderRadius: "50%", background: "var(--accent)", alignItems: "center", justifyContent: "center" }}>
             <AgentMark size={12} color="#fff" />
           </span>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--ink-3)" }}>Companion · from this section</span>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--ink-3)" }}>Compagnon · cette section</span>
           {hasSponsored && (
             <span style={{ marginLeft: "auto", fontSize: 9.5, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--sponsored-fg)", background: "var(--sponsored-bg)", border: "1px solid var(--sponsored-line)", padding: "1px 7px", borderRadius: "999px", display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Includes sponsored
+              <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Inclut du sponsorisé
             </span>
           )}
         </div>
@@ -66,7 +66,7 @@ export function ContextualModule({ module, segmentId, state, store }) {
           <span style={{ flex: 1, textAlign: "left" }}>
             <span style={{ display: "block", fontWeight: 700, fontSize: hero ? 18 : 15.5, color: "var(--ink-1)", lineHeight: 1.25 }}>{module.label}</span>
             <span style={{ display: "block", fontSize: 12.5, color: "var(--ink-3)", marginTop: 2 }}>
-              {module.type === "compare" ? "Side-by-side, sponsored options flagged" : module.type === "recommend" ? "A few questions, then a pick that fits" : "The key points in 20 seconds"}
+              {module.type === "compare" ? "Côte à côte, options sponsorisées signalées" : module.type === "recommend" ? "Quelques questions, puis un choix adapté" : "L'essentiel en 20 secondes"}
             </span>
           </span>
           <span className="n3-go"><i className="ph ph-arrow-right" style={{ fontSize: 16 }}></i></span>

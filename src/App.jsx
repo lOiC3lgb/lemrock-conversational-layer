@@ -1,10 +1,9 @@
 /* ============================================================
-   App.jsx — assembles the demonstrator + governance signals + Tweaks
+   App.jsx — assemble le démonstrateur + signaux de gouvernance
    ============================================================ */
 import { useEffect, useState, Fragment } from "react";
 import { DEMO } from "./data/index.js";
 import { usePresence } from "./store/store.js";
-import { useTweaks, TweaksPanel, TweakSection, TweakToggle, TweakSlider } from "./components/TweaksPanel.jsx";
 import { AgentMark } from "./components/AgentMark.jsx";
 import { Article } from "./components/Article.jsx";
 import { AmbientBubble } from "./components/AmbientBubble.jsx";
@@ -12,58 +11,48 @@ import { AgentPanel, LexicalPopover } from "./components/Agent.jsx";
 import { ImmersivePanel } from "./components/ImmersivePanel.jsx";
 import { ComplianceDock, LevelBadge, SuppressToast } from "./components/EventsPanel.jsx";
 
-const TWEAK_DEFAULTS = {
-  N1: true, N2: true, N3: true, N4: true, N5: true,
-  maxSolicit: 4,
-  cooldown: 6,
-  dense: false,
-  coral: false,
-  reduced: false
-};
-
 function IntroHint({ onDismiss }) {
   return (
     <div className="intro-hint glass" role="note">
       <AgentMark size={16} color="var(--accent)" />
-      <span>Tap <span className="ih-term">underlined terms</span>, keep scrolling for the companion, or open it bottom-right.</span>
-      <button onClick={onDismiss} aria-label="Dismiss"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
+      <span>Touchez les <span className="ih-term">termes soulignés</span>, continuez à scroller pour le compagnon, ou ouvrez-le en bas à droite.</span>
+      <button onClick={onDismiss} aria-label="Fermer"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
     </div>
   );
 }
 
 export function App() {
   const [state, store] = usePresence();
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [intro, setIntro] = useState(true);
 
-  // ---- Tweaks -> store + document attributes ----
+  // fixed config (the Tweaks panel was removed): keep the document attributes explicit
   useEffect(() => {
-    store.setConfig({
-      levels: { N1: t.N1, N2: t.N2, N3: t.N3, N4: t.N4, N5: t.N5 },
-      coralAccent: t.coral,
-      reducedMotion: t.reduced,
-      denseSegmentSim: t.dense
-    });
-    store.setGov({
-      maxSolicitationsPerSession: t.maxSolicit,
-      cooldownBetweenSolicitations: t.cooldown * 1000
-    });
-    document.documentElement.setAttribute("data-accent", t.coral ? "coral" : "graphite");
-    document.documentElement.setAttribute("data-reduced", t.reduced ? "on" : "off");
-  }, [t.N1, t.N2, t.N3, t.N4, t.N5, t.maxSolicit, t.cooldown, t.coral, t.reduced, t.dense]);
+    document.documentElement.setAttribute("data-accent", "graphite");
+    document.documentElement.setAttribute("data-reduced", state.reducedMotion ? "on" : "off");
+  }, [state.reducedMotion]);
 
-  // ---- N2 governance signals: scroll-threshold awake + dwell teaser ----
+  // ---- N2 governance signals: scroll-threshold awake + precise dwell teaser ----
   useEffect(() => {
     const scroller = document.scrollingElement || document.documentElement;
     const segTeaser = {};
     DEMO.TEASERS.forEach((tz) => { segTeaser[tz.segmentId] = tz; });
-    let current = null, idle = null;
+    let idle = null;
 
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => { if (en.isIntersecting && en.intersectionRatio >= 0.5) current = en.target.getAttribute("data-seg"); });
-    }, { threshold: [0.5] });
-    const observe = () => document.querySelectorAll("[data-seg]").forEach((el) => io.observe(el));
-    observe();
+    // the segment crossing the reader's "eye line" (≈40% down the viewport) —
+    // far more precise than an intersection-ratio threshold for picking the
+    // section actually being read
+    const activeSegment = () => {
+      const line = window.innerHeight * 0.4;
+      let best = null, bestDist = Infinity;
+      document.querySelectorAll("[data-seg]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        const covers = r.top <= line && r.bottom >= line;
+        const dist = covers ? 0 : Math.min(Math.abs(r.top - line), Math.abs(r.bottom - line));
+        if (dist < bestDist) { bestDist = dist; best = el.getAttribute("data-seg"); }
+      });
+      return best;
+    };
 
     const onScroll = () => {
       const st = store.getState();
@@ -76,15 +65,16 @@ export function App() {
         if (document.hidden) return;
         if (s.agent || s.immersive || s.optedOut || !s.levels.N2) return;
         if (s.bubble !== "dormant" && s.bubble !== "awake") return;
-        const tz = current && segTeaser[current];
+        const seg = activeSegment();
+        const tz = seg && segTeaser[seg];
         if (tz && !s.shownTeasers[tz.id]) store.surfaceTeaser(tz);
       }, store.getState().gov.dwellAwakeMs);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); io.disconnect(); clearTimeout(idle); };
+    return () => { window.removeEventListener("scroll", onScroll); clearTimeout(idle); };
   }, []);
 
-  // dismiss intro on first meaningful interaction
+  // masque l'aide d'intro à la première interaction
   useEffect(() => {
     if (state.events.length > 0 && intro) setIntro(false);
   }, [state.events.length]);
@@ -93,37 +83,18 @@ export function App() {
     <Fragment>
       <Article state={state} store={store} />
 
-      {/* layer surfaces */}
+      {/* surfaces de la couche */}
       {!state.agent && !state.immersive && <AmbientBubble state={state} store={store} />}
       <AgentPanel state={state} store={store} />
       <LexicalPopover state={state} store={store} />
       <ImmersivePanel state={state} store={store} />
 
-      {/* governance + instrumentation chrome */}
+      {/* gouvernance + chrome */}
       <ComplianceDock state={state} store={store} />
       <LevelBadge state={state} store={store} />
       <SuppressToast state={state} store={store} />
 
       {intro && <IntroHint onDismiss={() => setIntro(false)} />}
-
-      {/* Tweaks */}
-      <TweaksPanel title="Tweaks">
-        <TweakSection label="Presence levels" />
-        <TweakToggle label="N1 · Lexical (inline terms)" value={t.N1} onChange={(v) => setTweak("N1", v)} />
-        <TweakToggle label="N2 · Ambient (living bubble)" value={t.N2} onChange={(v) => setTweak("N2", v)} />
-        <TweakToggle label="N3 · Contextual (modules)" value={t.N3} onChange={(v) => setTweak("N3", v)} />
-        <TweakToggle label="N4 · Sponsored surfaces" value={t.N4} onChange={(v) => setTweak("N4", v)} />
-        <TweakToggle label="N5 · Immersive takeover" value={t.N5} onChange={(v) => setTweak("N5", v)} />
-
-        <TweakSection label="Attention governance" />
-        <TweakSlider label="Solicitation budget / session" value={t.maxSolicit} min={1} max={8} step={1} onChange={(v) => setTweak("maxSolicit", v)} />
-        <TweakSlider label="Cooldown between pushes" value={t.cooldown} min={0} max={15} step={1} unit="s" onChange={(v) => setTweak("cooldown", v)} />
-        <TweakToggle label="Simulate dense native ads (watch section)" value={t.dense} onChange={(v) => setTweak("dense", v)} />
-
-        <TweakSection label="Appearance" />
-        <TweakToggle label="GBX coral accent" value={t.coral} onChange={(v) => setTweak("coral", v)} />
-        <TweakToggle label="Reduced motion" value={t.reduced} onChange={(v) => setTweak("reduced", v)} />
-      </TweaksPanel>
     </Fragment>
   );
 }

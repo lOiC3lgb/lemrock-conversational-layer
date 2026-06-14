@@ -1,9 +1,9 @@
 /* ============================================================
-   SponsoredFrame.jsx — the single monetization shell (PRD §7.0.2, §7.4)
-   One template renders every paid/editorial surface via slots.
-   - sponsored offers ALWAYS carry a visible label + brand
-   - editorial offers are visibly distinct, never labelled sponsored
-   - viewability: impression fires only after >=50% visible for >=1s
+   SponsoredFrame.jsx — l'écrin de monétisation unique (PRD §7.0.2, §7.4)
+   Un seul gabarit rend toutes les surfaces payantes/éditoriales via des slots.
+   - une offre sponsorisée porte TOUJOURS un label visible + la marque
+   - une offre éditoriale est distincte, jamais labellisée sponsorisée
+   - viewability : l'impression ne part qu'après >=50% visible >=1s
    ============================================================ */
 import { useRef, useEffect } from "react";
 import { PresenceStore } from "../store/store.js";
@@ -16,22 +16,36 @@ const CATEGORY_ICON = {
   "nutrition": "ph-lightning"
 };
 
-// placeholder "media" — clean swatch, never a bad fake photo (PRD: placeholder > bad attempt)
+// média : photo réelle si disponible, sinon un aplat propre (jamais une fausse photo bâclée)
 export function OfferMedia({ offer, h }) {
   const [a, b] = offer.swatch || ["#3a3a36", "#8a8a82"];
   const icon = CATEGORY_ICON[offer.category] || "ph-package";
+  const base = {
+    height: h, flex: h ? "none" : 1, minWidth: h,
+    borderRadius: "12px", position: "relative", overflow: "hidden",
+    background: `linear-gradient(135deg, ${a}, ${b})`,
+    display: "flex", alignItems: "center", justifyContent: "center"
+  };
+  if (offer.photo) {
+    return (
+      <div style={base}>
+        <img
+          src={offer.photo}
+          alt={offer.headline}
+          loading="lazy"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+      </div>
+    );
+  }
   return (
-    <div style={{
-      height: h, flex: h ? "none" : 1, minWidth: h,
-      borderRadius: "12px", position: "relative", overflow: "hidden",
-      background: `linear-gradient(135deg, ${a}, ${b})`,
-      display: "flex", alignItems: "center", justifyContent: "center"
-    }}>
+    <div style={base}>
       <i className={"ph-fill " + icon} style={{ fontSize: h ? Math.round(h * 0.42) : 40, color: "rgba(255,255,255,0.92)" }} aria-hidden="true"></i>
       <span style={{
         position: "absolute", left: 8, bottom: 7, fontSize: 9.5, letterSpacing: ".08em",
         textTransform: "uppercase", color: "rgba(255,255,255,0.7)", fontWeight: 600
-      }}>image</span>
+      }}>photo</span>
     </div>
   );
 }
@@ -47,7 +61,7 @@ export function SponsoredLabel({ offer }) {
       padding: "2px 8px", borderRadius: "999px", whiteSpace: "nowrap"
     }}>
       <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 11 }} aria-hidden="true"></i>
-      Sponsored · {offer.brand}
+      Sponsorisé · {offer.brand}
     </span>
   );
 }
@@ -59,12 +73,12 @@ export function EditorialTag() {
       textTransform: "uppercase", color: "var(--ink-3)", display: "inline-flex", alignItems: "center", gap: 5
     }}>
       <i className="ph ph-pencil-simple-line" style={{ fontSize: 12 }} aria-hidden="true"></i>
-      Editorial pick
+      Choix éditorial
     </span>
   );
 }
 
-// viewability hook — PRD §10: >=50% visible >=1s before counting an impression
+// viewability — PRD §10 : >=50% visible >=1s avant de compter une impression
 function useViewability(ref, offer) {
   useEffect(() => {
     if (!ref.current) return;
@@ -83,14 +97,14 @@ function useViewability(ref, offer) {
   }, []);
 }
 
-// ---- main shell ----
-// variant: "card" (default), "inline" (full-width in article), "mini" (compact row), "spec" (comparator row)
+// ---- écrin principal ----
+// variant : "card" (défaut), "inline" (pleine largeur dans l'article), "mini" (ligne compacte)
 export function SponsoredFrame({ offer, variant = "card", onCta }) {
   const ref = useRef(null);
   const sponsored = offer.kind === "sponsored";
   useViewability(ref, offer);
 
-  // fallback handling — never render a broken card (PRD §7.4)
+  // fallback — ne jamais rendre une carte cassée (PRD §7.4)
   if (!offer.headline) return null;
 
   const frameBase = {
@@ -122,7 +136,7 @@ export function SponsoredFrame({ offer, variant = "card", onCta }) {
     );
   }
 
-  // default / inline card
+  // carte par défaut / inline
   const isInline = variant === "inline";
   return (
     <div ref={ref} style={{ ...frameBase, padding: isInline ? 18 : 14 }}>
@@ -147,7 +161,7 @@ export function SponsoredFrame({ offer, variant = "card", onCta }) {
       {sponsored && (
         <div style={{ marginTop: 10, paddingTop: 9, borderTop: "1px dashed var(--sponsored-line)", fontSize: 11, color: "var(--ink-3)", display: "flex", alignItems: "center", gap: 6 }}>
           <i className="ph ph-info" style={{ fontSize: 12 }} aria-hidden="true"></i>
-          Paid placement. Shown because it matches what you're reading.
+          Placement payant. Affiché parce qu'il correspond à votre lecture.
         </div>
       )}
     </div>

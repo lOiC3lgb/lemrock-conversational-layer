@@ -55,17 +55,17 @@ export function AgentPanel({ state, store }) {
   if (!a) return null;
 
   return (
-    <div className="agent-dock" role="dialog" aria-label="Reading companion">
+    <div className="agent-dock" role="dialog" aria-label="Compagnon de lecture">
       <div className="glass agent-card">
         <header style={agentHead}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
             <Avatar />
             <div style={{ lineHeight: 1.15 }}>
-              <div style={{ fontWeight: 700, fontSize: 13.5, color: "var(--ink-1)" }}>Companion</div>
+              <div style={{ fontWeight: 700, fontSize: 13.5, color: "var(--ink-1)" }}>Compagnon</div>
               <div style={{ fontSize: 11, color: "var(--ink-3)" }}>{labelFor(a.triggerSource)}</div>
             </div>
           </div>
-          <button onClick={() => store.closeAgent()} style={iconBtn} aria-label="Close">
+          <button onClick={() => store.closeAgent()} style={iconBtn} aria-label="Fermer">
             <i className="ph ph-x" style={{ fontSize: 16 }}></i>
           </button>
         </header>
@@ -76,7 +76,7 @@ export function AgentPanel({ state, store }) {
 }
 
 function labelFor(src) {
-  return ({ term: "From a term you tapped", teaser: "Suggested while reading", module: "From this section", cta: "You asked", semi: "You opened me" })[src] || "Reading companion";
+  return ({ term: "Depuis un terme touché", teaser: "Suggéré pendant la lecture", module: "Depuis cette section", cta: "Vous avez demandé", semi: "Vous m'avez ouvert" })[src] || "Compagnon de lecture";
 }
 
 // ============================================================

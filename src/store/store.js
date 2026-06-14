@@ -207,6 +207,14 @@ function createStore() {
     sponsoredImpression(offerId, kind) { emit("sponsored.impression", { offerId, kind }); },
     sponsoredClick(offerId, kind) { emit("sponsored.click", { offerId, kind }); },
 
+    // ---- demo shortcuts: jump straight to a level (explicit action, bypasses budget) ----
+    demoTeaser() {
+      const t = DEMO.TEASERS.find((x) => x.id === "tz-watch") || DEMO.TEASERS[0];
+      set({ agent: null, immersive: null, bubble: "teaser", teaser: t, activeLevelBadge: "N2" });
+      emit("teaser.shown", { teaserId: t.id, segmentId: t.segmentId, sponsored: t.sponsored });
+    },
+    flashLevel(level) { set({ activeLevelBadge: level }); },
+
     clearBadge() { set({ activeLevelBadge: null }); }
   };
 

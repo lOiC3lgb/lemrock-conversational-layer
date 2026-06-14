@@ -1,12 +1,14 @@
 /* ============================================================
-   data.js — the demonstrator's content & data model (PRD §8)
-   Annexe A (article), B (offer catalogue), C (scripted flows).
-   English editorial content. No style values here.
-   Augmented terms are marked inline as {{term-id}} and resolved at render.
+   data.js — contenu & modèle de données du démonstrateur (PRD §8)
+   Annexe A (article), B (catalogue d'offres), C (flows scriptés).
+   Contenu éditorial en français. Aucune valeur de style ici.
+   Les termes augmentés sont notés {{term-id}} et résolus au rendu.
    ============================================================ */
 
+const IMG = (id, w = 640) => `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;
+
 // ---------------------------------------------------------
-// AUGMENTED TERMS (N1) — keyed by id
+// TERMES AUGMENTÉS (N1) — indexés par id
 // ---------------------------------------------------------
 export const TERMS = {
   "term-drop": {
@@ -14,11 +16,11 @@ export const TERMS = {
     flowId: "flow-drop", offerRef: null
   },
   "term-softflasks": {
-    id: "term-softflasks", surface: "soft flasks", segmentId: "seg-materiel",
+    id: "term-softflasks", surface: "flasques souples", segmentId: "seg-materiel",
     flowId: "flow-softflasks", offerRef: "off-hydration"
   },
   "term-poles": {
-    id: "term-poles", surface: "poles", segmentId: "seg-materiel",
+    id: "term-poles", surface: "bâtons", segmentId: "seg-materiel",
     flowId: "flow-poles", offerRef: "off-poles"
   },
   "term-dplus": {
@@ -30,142 +32,142 @@ export const TERMS = {
     flowId: "flow-vo2max", offerRef: null
   },
   "term-gps": {
-    id: "term-gps", surface: "GPS accuracy", segmentId: "seg-montre",
+    id: "term-gps", surface: "précision GPS", segmentId: "seg-montre",
     flowId: "flow-gps", offerRef: null
   },
   "term-cardio": {
-    id: "term-cardio", surface: "wrist heart-rate", segmentId: "seg-montre",
+    id: "term-cardio", surface: "cardio au poignet", segmentId: "seg-montre",
     flowId: "flow-cardio", offerRef: null
   }
 };
 
 // ---------------------------------------------------------
-// OFFER CATALOGUE (N4 / upsell) — Annexe B
+// CATALOGUE D'OFFRES (N4 / upsell) — Annexe B
 // ---------------------------------------------------------
 export const OFFERS = {
   "off-shoeA": {
     offerId: "off-shoeA", kind: "sponsored", brand: "Saltus",
-    label: "Sponsored", category: "trail-shoes",
-    headline: "Saltus Ridge GTX", subline: "Grippy lugs for soft, technical singletrack — built for first muddy seasons.",
-    price: "$148", swatch: ["#3b4a3a", "#c5743a"],
-    cta: { text: "See the fit", action: "openAgent", target: "flow-chaussure-sponsored" },
+    label: "Sponsorisé", category: "trail-shoes",
+    headline: "Saltus Ridge GTX", subline: "Crampons accrocheurs pour sentier meuble et technique — pensée pour les premières saisons boueuses.",
+    price: "148 €", swatch: ["#3b4a3a", "#c5743a"], photo: IMG("photo-1542291026-7eec264c27ff"),
+    cta: { text: "Voir le modèle", action: "openAgent", target: "flow-chaussure-sponsored" },
     targetSegmentIds: ["seg-materiel"]
   },
   "off-watchA": {
     offerId: "off-watchA", kind: "sponsored", brand: "Pace Labs",
-    label: "Sponsored", category: "gps-watch",
-    headline: "Pace Labs Apex 2", subline: "Dual-band GPS, 38 h tracking.",
-    price: "$329", swatch: ["#1d2733", "#d9b25b"],
-    specs: { battery: "38 h", weight: "52 g", gps: "Dual-band", hr: "Optical + chest", price: "$329" },
-    cta: { text: "Compare offers", action: "openAgent", target: "flow-montre-compare" },
+    label: "Sponsorisé", category: "gps-watch",
+    headline: "Pace Labs Apex 2", subline: "GPS double-bande, 38 h d'autonomie.",
+    price: "329 €", swatch: ["#1d2733", "#d9b25b"], photo: IMG("photo-1579586337278-3befd40fd17a"),
+    specs: { battery: "38 h", weight: "52 g", gps: "Double-bande", hr: "Optique + ceinture", price: "329 €" },
+    cta: { text: "Comparer les offres", action: "openAgent", target: "flow-montre-compare" },
     targetSegmentIds: ["seg-montre"]
   },
   "off-watchB": {
     offerId: "off-watchB", kind: "editorial", brand: "Northwind",
     label: null, category: "gps-watch",
-    headline: "Northwind Trail 50", subline: "All-rounder, great value.",
-    price: "$219", swatch: ["#26303a", "#5a8f7b"],
-    specs: { battery: "26 h", weight: "48 g", gps: "Single-band", hr: "Optical", price: "$219" },
-    cta: { text: "Details", action: "openAgent", target: null },
+    headline: "Northwind Trail 50", subline: "Polyvalente, excellent rapport qualité-prix.",
+    price: "219 €", swatch: ["#26303a", "#5a8f7b"], photo: IMG("photo-1508685096489-7aacd43bd3b1"),
+    specs: { battery: "26 h", weight: "48 g", gps: "Mono-bande", hr: "Optique", price: "219 €" },
+    cta: { text: "Détails", action: "openAgent", target: null },
     targetSegmentIds: ["seg-montre"]
   },
   "off-watchC": {
     offerId: "off-watchC", kind: "editorial", brand: "Cardo",
     label: null, category: "gps-watch",
-    headline: "Cardo Run S", subline: "Lightest, best for short outings.",
-    price: "$179", swatch: ["#2b2733", "#b0607a"],
-    specs: { battery: "18 h", weight: "39 g", gps: "Single-band", hr: "Optical", price: "$179" },
-    cta: { text: "Details", action: "openAgent", target: null },
+    headline: "Cardo Run S", subline: "La plus légère, parfaite pour les sorties courtes.",
+    price: "179 €", swatch: ["#2b2733", "#b0607a"], photo: IMG("photo-1617043786394-f977fa12eddf"),
+    specs: { battery: "18 h", weight: "39 g", gps: "Mono-bande", hr: "Optique", price: "179 €" },
+    cta: { text: "Détails", action: "openAgent", target: null },
     targetSegmentIds: ["seg-montre"]
   },
   "off-hydration": {
     offerId: "off-hydration", kind: "editorial", brand: "—",
     label: null, category: "hydration",
-    headline: "Hydration vest, 5 L", subline: "Two 500 ml soft flasks up front, no bounce.",
-    price: "$95", swatch: ["#2a3640", "#7a8a93"],
-    cta: { text: "How to choose", action: "openAgent", target: null },
+    headline: "Gilet d'hydratation 5 L", subline: "Deux flasques souples de 500 ml à l'avant, sans ballottement.",
+    price: "95 €", swatch: ["#2a3640", "#7a8a93"], photo: IMG("photo-1602143407151-7111542de6e8"),
+    cta: { text: "Comment choisir", action: "openAgent", target: null },
     targetSegmentIds: ["seg-materiel"]
   },
   "off-poles": {
     offerId: "off-poles", kind: "editorial", brand: "—",
     label: null, category: "poles",
-    headline: "Folding carbon poles", subline: "Z-fold, 230 g the pair — for steep climbs.",
-    price: "$110", swatch: ["#2e2a25", "#a98f6b"],
-    cta: { text: "How to choose", action: "openAgent", target: null },
+    headline: "Bâtons carbone pliables", subline: "Z-fold, 230 g la paire — pour les montées raides.",
+    price: "110 €", swatch: ["#2e2a25", "#a98f6b"], photo: IMG("photo-1551632811-561732d1e306"),
+    cta: { text: "Comment choisir", action: "openAgent", target: null },
     targetSegmentIds: ["seg-materiel"]
   },
   "off-nutrition": {
     offerId: "off-nutrition", kind: "sponsored", brand: "Vertic Fuel",
-    label: "Sponsored", category: "nutrition",
-    headline: "Vertic Fuel gels", subline: "Gentle on the stomach, 22 g carbs each.",
-    price: "$2.40", swatch: ["#33291f", "#d98b3a"],
-    cta: { text: "Try a sample pack", action: "openAgent", target: null },
+    label: "Sponsorisé", category: "nutrition",
+    headline: "Gels Vertic Fuel", subline: "Doux pour l'estomac, 22 g de glucides chacun.",
+    price: "2,40 €", swatch: ["#33291f", "#d98b3a"], photo: IMG("photo-1571748982800-fa51082c2224"),
+    cta: { text: "Essayer un pack découverte", action: "openAgent", target: null },
     targetSegmentIds: ["seg-nutrition"]
   }
 };
 
 // ---------------------------------------------------------
-// SCRIPTED AGENT FLOWS — Annexe C
+// FLOWS AGENT SCRIPTÉS — Annexe C
 // ---------------------------------------------------------
 export const FLOWS = {
   "flow-drop": {
     flowId: "flow-drop", title: "drop",
-    message: "Drop is the height difference between the heel and the forefoot of a shoe, in millimetres. A high drop (8–10 mm) cushions the heel strike; a low drop (0–4 mm) keeps you closer to the ground and loads the calves more. For a first trail season, 6–8 mm is a forgiving middle ground.",
+    message: "Le drop, c'est la différence de hauteur entre le talon et l'avant du pied d'une chaussure, en millimètres. Un drop élevé (8–10 mm) amortit l'attaque talon ; un drop faible (0–4 mm) vous garde près du sol et sollicite davantage les mollets. Pour une première saison de trail, 6–8 mm est un bon compromis.",
     suggestedFollowups: ["flow-recommend-shoes"], offerRef: null
   },
   "flow-softflasks": {
-    flowId: "flow-softflasks", title: "soft flasks",
-    message: "Soft flasks are collapsible bottles that ride in the front pockets of a hydration vest. They shrink as you drink, so nothing sloshes against your chest. Two 500 ml flasks up front is the most common beginner setup.",
+    flowId: "flow-softflasks", title: "flasques souples",
+    message: "Les flasques souples sont des bidons souples logés dans les poches avant d'un gilet d'hydratation. Elles se rétractent à mesure que vous buvez, donc rien ne ballotte contre la poitrine. Deux flasques de 500 ml à l'avant, c'est le setup débutant le plus courant.",
     suggestedFollowups: [], offerRef: "off-hydration"
   },
   "flow-poles": {
-    flowId: "flow-poles", title: "poles",
-    message: "Poles take load off your legs on steep climbs and steady you on loose descents. Folding (Z-fold) carbon pairs weigh ~230 g and stow in a vest. Most beginners only reach for them once climbs get long.",
+    flowId: "flow-poles", title: "bâtons",
+    message: "Les bâtons déchargent les jambes dans les montées raides et vous stabilisent dans les descentes glissantes. Une paire carbone pliable (Z-fold) pèse ~230 g et se range dans un gilet. La plupart des débutants ne les sortent qu'une fois les montées devenues longues.",
     suggestedFollowups: [], offerRef: "off-poles"
   },
   "flow-dplus": {
     flowId: "flow-dplus", title: "D+",
-    message: "D+ is the total vertical gain of a route — every metre you climb, added up. 800 m of D+ over 20 km is already serious for a first season. Distance alone tells you very little on trail; pair it with D+ to gauge real effort.",
+    message: "Le D+, c'est le dénivelé positif total d'un parcours — chaque mètre grimpé, additionné. 800 m de D+ sur 20 km, c'est déjà sérieux pour une première saison. La distance seule ne dit presque rien en trail ; associez-la au D+ pour jauger l'effort réel.",
     suggestedFollowups: ["flow-summarize-plan"], offerRef: null
   },
   "flow-vo2max": {
     flowId: "flow-vo2max", title: "VO2max",
-    message: "VO2max is the most oxygen your body can use per minute — a ceiling on sustained aerobic effort. You don't need to chase the number as a beginner: consistent easy mileage raises it on its own over the first months.",
+    message: "La VO2max, c'est la quantité maximale d'oxygène que votre corps peut utiliser par minute — un plafond pour l'effort aérobie soutenu. Pas besoin de courir après ce chiffre en débutant : un volume facile et régulier le fait monter tout seul sur les premiers mois.",
     suggestedFollowups: [], offerRef: null
   },
   "flow-gps": {
-    flowId: "flow-gps", title: "GPS accuracy",
-    message: "Under tree cover and in valleys, single-band GPS can drift and over-read distance. Dual-band (multi-frequency) tracks the same trace far more tightly — the main reason to spend up on a watch if you run technical terrain.",
+    flowId: "flow-gps", title: "précision GPS",
+    message: "Sous couvert forestier et en fond de vallée, le GPS mono-bande peut dériver et surévaluer la distance. Le multi-bande (multi-fréquences) suit la même trace bien plus finement — la principale raison de mettre le prix si vous courez en terrain technique.",
     suggestedFollowups: ["flow-montre-compare"], offerRef: null
   },
   "flow-cardio": {
-    flowId: "flow-cardio", title: "wrist heart-rate",
-    message: "Wrist optical heart-rate is convenient but lags on sharp climbs and in the cold. For steady zone-2 base training it's fine; if you train by precise zones, a chest strap is still more honest.",
+    flowId: "flow-cardio", title: "cardio au poignet",
+    message: "Le cardio optique au poignet est pratique mais retarde sur les montées sèches et dans le froid. Pour de l'endurance fondamentale en zone 2, ça suffit ; si vous vous entraînez par zones précises, une ceinture pectorale reste plus honnête.",
     suggestedFollowups: [], offerRef: null
   },
   "flow-nutrition": {
-    flowId: "flow-nutrition", title: "Fuelling on the run",
-    message: "Under an hour, water is enough. Past that, aim for 20–30 g of carbohydrate every half hour — a gel, a few chews, or half a banana. The one real rule: practise it on training runs, never debut a new flavour on race morning.",
+    flowId: "flow-nutrition", title: "S'alimenter en course",
+    message: "En dessous d'une heure, l'eau suffit. Au-delà, visez 20 à 30 g de glucides toutes les demi-heures — un gel, quelques pâtes de fruits, ou une demi-banane. La seule vraie règle : s'entraîner à le faire en sortie, jamais d'inaugurer une saveur le jour J.",
     suggestedFollowups: [], offerRef: "off-nutrition"
   },
   "flow-summarize-plan": {
-    flowId: "flow-summarize-plan", title: "8-week plan, in 20 seconds",
-    message: "Weeks 1–2: three easy runs, walk the climbs. Weeks 3–5: add one hilly run and a little D+ each week. Weeks 6–7: a longer weekend outing, keep one full rest day. Week 8: ease off, then run your first trail relaxed. Rule of thumb: only one hard thing per week.",
+    flowId: "flow-summarize-plan", title: "Le plan en 20 secondes",
+    message: "Semaines 1–2 : trois sorties faciles, on marche les montées. Semaines 3–5 : on ajoute une sortie vallonnée et un peu de D+ chaque semaine. Semaines 6–7 : une sortie longue le week-end, on garde un jour de repos complet. Semaine 8 : on lève le pied, puis on court son premier trail détendu. Règle d'or : une seule chose dure par semaine.",
     suggestedFollowups: ["flow-recommend-shoes"], offerRef: null
   },
   "flow-montre-compare": {
-    flowId: "flow-montre-compare", title: "Comparing 3 GPS watches",
-    message: "Here's how the three stack up for a beginner. Pace Labs is sponsored — it's flagged below. Northwind is the value all-rounder; Cardo is lightest for short outings.",
+    flowId: "flow-montre-compare", title: "Comparer 3 montres GPS",
+    message: "Voici ce que valent les trois pour un débutant. Pace Labs est sponsorisé — c'est signalé ci-dessous. Northwind est la polyvalente au bon rapport qualité-prix ; Cardo est la plus légère pour les sorties courtes.",
     suggestedFollowups: [], offerRef: null, immersive: "comparator"
   },
   "flow-recommend-shoes": {
-    flowId: "flow-recommend-shoes", title: "Find trail shoes that fit you",
-    message: "Three quick questions and I'll narrow it down — terrain, how often you'll run, and budget.",
+    flowId: "flow-recommend-shoes", title: "Trouver des chaussures adaptées",
+    message: "Trois questions rapides et j'affine — terrain, fréquence, et budget.",
     suggestedFollowups: [], offerRef: null, immersive: "finder"
   },
   "flow-chaussure-sponsored": {
     flowId: "flow-chaussure-sponsored", title: "Saltus Ridge GTX",
-    message: "Starting on soft, technical singletrack? The Ridge GTX runs grippy with a 6 mm drop — forgiving for a first season. This is a sponsored recommendation from Saltus.",
+    message: "Vous débutez sur du sentier technique et meuble ? La Ridge GTX est accrocheuse avec un drop de 6 mm — indulgente pour une première saison. Ceci est une recommandation sponsorisée de Saltus.",
     suggestedFollowups: ["flow-recommend-shoes"], offerRef: "off-shoeA"
   }
 };
@@ -177,72 +179,72 @@ export const SEGMENTS = [
   {
     id: "seg-intro", order: 1, title: null, nativeAdDensity: 0.05,
     paras: [
-      "Trail running isn't road running with a few rocks scattered on it. The ground moves under you, the gradient never settles, and the effort comes in waves rather than a steady hum. That's the appeal — and the reason your first outings can feel humbling if you treat them like a flat 10K.",
-      "The good news: starting well is mostly about expectations, not fitness. Get a handful of things right and the trail stops fighting you. This guide walks through the gear that actually matters, how to read climbs, what to eat, the watch question, and a gentle eight-week on-ramp."
+      "Le trail, ce n'est pas de la route avec quelques cailloux dessus. Le sol bouge sous vos pieds, la pente ne se stabilise jamais, et l'effort arrive par vagues plutôt qu'en bourdonnement régulier. C'est tout son charme — et la raison pour laquelle vos premières sorties peuvent être humbles si vous les abordez comme un 10 km tout plat.",
+      "La bonne nouvelle : bien débuter tient surtout aux attentes, pas à la forme. Réglez quelques détails et le sentier cesse de vous résister. Ce guide passe en revue le matériel qui compte vraiment, comment lire une montée, quoi manger, la question de la montre, et un plan progressif de huit semaines."
     ],
     module: null
   },
   {
-    id: "seg-materiel", order: 2, title: "The gear that actually changes things",
+    id: "seg-materiel", order: 2, title: "Le matériel qui change vraiment les choses",
     nativeAdDensity: 0.12,
     paras: [
-      "You need far less than the shops suggest, but three things genuinely change the experience. Shoes come first. Trail shoes trade road cushioning for grip — deeper lugs that bite into mud and a rubber that holds on wet rock. The other number to know is {{term-drop}}, which decides how the shoe loads your legs over long descents.",
-      "Hydration is the second. A light vest with two {{term-softflasks}} up front keeps water close and your hands free, which matters more than capacity on anything under two hours.",
-      "Third, and optional at first: {{term-poles}}. Most beginners ignore them until their first genuinely steep climb, then never go back."
+      "Il en faut bien moins que ce que suggèrent les boutiques, mais trois choses changent réellement l'expérience. Les chaussures d'abord. Une chaussure de trail troque l'amorti de la route contre l'accroche — des crampons plus profonds qui mordent la boue et une gomme qui tient sur le rocher mouillé. L'autre chiffre à connaître, c'est le {{term-drop}}, qui décide de la façon dont la chaussure sollicite vos jambes sur les longues descentes.",
+      "L'hydratation ensuite. Un gilet léger avec deux {{term-softflasks}} à l'avant garde l'eau à portée et les mains libres, ce qui compte plus que la contenance sur tout ce qui dure moins de deux heures.",
+      "Enfin, optionnel au début : les {{term-poles}}. La plupart des débutants les ignorent jusqu'à leur première vraie montée raide, puis n'y renoncent plus."
     ],
     module: {
-      type: "recommend", label: "Find trail shoes that fit you",
+      type: "recommend", label: "Trouver des chaussures adaptées",
       flowId: "flow-recommend-shoes", offerIds: ["off-shoeA"]
     }
   },
   {
-    id: "seg-denivele", order: 3, title: "Reading the climb",
+    id: "seg-denivele", order: 3, title: "Lire la montée",
     nativeAdDensity: 0.08,
     paras: [
-      "On trail, distance lies. Twelve kilometres can be a jog or a death march depending on one number: {{term-dplus}}. Learn to read it and you'll pace climbs you've never seen before with surprising calm.",
-      "The technique that saves beginners isn't running harder — it's walking. Power-hiking the steep bits keeps your heart rate off the ceiling and your legs intact for the top. You don't need a high {{term-vo2max}} to enjoy this; you need to spend less of it on the wrong sections."
+      "En trail, la distance ment. Douze kilomètres peuvent être un footing ou un chemin de croix selon un seul chiffre : le {{term-dplus}}. Apprenez à le lire et vous gérerez des montées inconnues avec un calme surprenant.",
+      "La technique qui sauve les débutants, ce n'est pas de courir plus fort — c'est de marcher. Marcher vite dans les passages raides garde votre cœur loin du plafond et vos jambes intactes pour le sommet. Pas besoin d'une grosse {{term-vo2max}} pour aimer ça ; il faut surtout en dépenser moins au mauvais endroit."
     ],
     module: null
   },
   {
-    id: "seg-nutrition", order: 4, title: "Eating on the move",
+    id: "seg-nutrition", order: 4, title: "S'alimenter en mouvement",
     nativeAdDensity: 0.10,
     paras: [
-      "Under an hour, water is plenty. Past that, your body wants a small, steady drip of carbohydrate — think 20 to 30 grams every half hour rather than one big hit when you're already empty.",
-      "Gels are the compact option; chews and a banana in the pack work just as well. The only real rule is to practise it on training runs, never to debut a new flavour on race morning."
+      "En dessous d'une heure, l'eau suffit. Au-delà, le corps réclame un petit apport régulier de glucides — comptez 20 à 30 grammes toutes les demi-heures plutôt qu'une grosse dose quand vous êtes déjà à plat.",
+      "Les gels sont l'option compacte ; les pâtes de fruits et une banane dans le sac font tout aussi bien l'affaire. La seule vraie règle : s'entraîner à le faire en sortie, jamais d'inaugurer une nouvelle saveur le matin de la course."
     ],
     module: null
   },
   {
-    id: "seg-montre", order: 5, title: "Your first GPS watch",
+    id: "seg-montre", order: 5, title: "Votre première montre GPS",
     nativeAdDensity: 0.16,
     paras: [
-      "A watch is the one piece of kit where spending more genuinely buys accuracy. The two things that separate a $179 watch from a $329 one are {{term-gps}} and battery life — everything else is mostly software.",
-      "Don't over-buy. {{term-cardio}} is good enough for easy base training, and 18 hours of battery covers far more than a beginner will ever run in one go. Match the watch to the running you'll actually do, not the running you imagine."
+      "La montre est le seul équipement où dépenser plus achète réellement de la précision. Les deux choses qui séparent une montre à 179 € d'une à 329 €, c'est la {{term-gps}} et l'autonomie — le reste est surtout du logiciel.",
+      "N'achetez pas trop. Le {{term-cardio}} suffit pour de l'endurance fondamentale tranquille, et 18 heures d'autonomie couvrent bien plus que ce qu'un débutant courra jamais d'une traite. Accordez la montre à la course que vous ferez vraiment, pas à celle que vous imaginez."
     ],
     module: {
-      type: "compare", label: "Compare these 3 GPS watches",
+      type: "compare", label: "Comparer ces 3 montres GPS",
       flowId: "flow-montre-compare", offerIds: ["off-watchA", "off-watchB", "off-watchC"]
     }
   },
   {
-    id: "seg-plan", order: 6, title: "The eight-week on-ramp",
+    id: "seg-plan", order: 6, title: "Le plan progressif sur huit semaines",
     nativeAdDensity: 0.06,
     paras: [
-      "You can be trail-ready in two months without wrecking yourself. The shape is simple: build easy volume first, add a little climbing each week, and protect one full rest day like it's training — because it is.",
-      "The single most common beginner mistake is doing two hard things in the same week. One quality session — a hilly run or a longer outing — is plenty. Everything else stays conversational."
+      "On peut être prêt pour le trail en deux mois sans se détruire. La logique est simple : construire du volume facile d'abord, ajouter un peu de dénivelé chaque semaine, et protéger un jour de repos complet comme un entraînement — parce que c'en est un.",
+      "L'erreur de débutant la plus courante, c'est d'enchaîner deux choses dures la même semaine. Une seule séance de qualité — une sortie vallonnée ou une sortie longue — suffit. Tout le reste reste conversationnel."
     ],
     module: null
   },
   {
-    id: "seg-conclusion", order: 7, title: "Your first steps",
+    id: "seg-conclusion", order: 7, title: "Vos premiers pas",
     nativeAdDensity: 0.04,
     paras: [
-      "Pick a route with modest D+, walk the climbs without guilt, carry a little water and a snack, and let the watch sit quietly on your wrist. The trail rewards patience far more than ambition.",
-      "If you only sort one thing before you start, make it the shoes. Get those right and the first season is a pleasure rather than a fight."
+      "Choisissez un parcours avec un D+ modeste, marchez les montées sans culpabiliser, emportez un peu d'eau et une collation, et laissez la montre tranquille à votre poignet. Le sentier récompense la patience bien plus que l'ambition.",
+      "Si vous ne réglez qu'une seule chose avant de partir, que ce soient les chaussures. Réussissez-les et la première saison sera un plaisir plutôt qu'un combat."
     ],
     module: {
-      type: "recommend", label: "Find your shoe",
+      type: "recommend", label: "Trouve ta chaussure",
       flowId: "flow-recommend-shoes", offerIds: ["off-shoeA"], hero: true
     }
   }
@@ -251,17 +253,19 @@ export const SEGMENTS = [
 export const ARTICLE = {
   articleId: "trail-debutant-001",
   vertical: "sport / outdoor",
-  kicker: "Trail running · Getting started",
-  title: "How to start trail running without blowing up on your first climbs",
-  dek: "Less kit than you think, one number that matters more than distance, and an eight-week on-ramp that won't break you.",
+  kicker: "Trail running · Pour bien débuter",
+  title: "Bien débuter le trail sans se cramer dès les premières montées",
+  dek: "Moins de matériel qu'on ne croit, un chiffre qui compte plus que la distance, et un plan de huit semaines qui ne vous brisera pas.",
   author: "Lemrock Outdoors",
-  date: "June 2026",
-  readTime: "7 min read",
+  date: "Juin 2026",
+  readTime: "7 min de lecture",
+  heroPhoto: IMG("photo-1486218119243-13883505764c", 1280),
+  heroCaption: "Photo · sortie trail sur sentier de campagne",
   segmentIds: SEGMENTS.map(s => s.id)
 };
 
 // ---------------------------------------------------------
-// CONFIG / GOVERNANCE (PRD §8, §9) — hooks, no style values
+// CONFIG / GOUVERNANCE (PRD §8, §9) — hooks, pas de valeurs de style
 // ---------------------------------------------------------
 export const CONFIG = {
   levels: { enabled: { N1: true, N2: true, N3: true, N4: true, N5: true } },
@@ -269,21 +273,19 @@ export const CONFIG = {
   governance: {
     maxSolicitationsPerSession: 4,
     cooldownBetweenSolicitations: 6000,   // ms
-    scrollAwakeThreshold: 0.18,           // fraction of article scrolled
+    scrollAwakeThreshold: 0.18,           // fraction de l'article scrollée
     dwellAwakeMs: 1400,
     moduleViewportThreshold: 0.6,
     nativeDensityCap: 0.30
   }
 };
 
-// teaser scripts the ambient bubble can surface, tied to a segment.
-// One per major section, so the bubble morphs open with a line that
-// matches where the reader currently is in the page (scroll-contextual).
+// teasers que la bulle ambiante peut faire surgir, rattachés à un segment
 export const TEASERS = [
-  { id: "tz-shoe",  segmentId: "seg-materiel",   line: "Not sure which trail shoe? Saltus can help.", flowId: "flow-chaussure-sponsored", sponsored: true },
-  { id: "tz-dplus", segmentId: "seg-denivele",   line: "“D+” keeps coming up — want it in one line?", flowId: "flow-dplus", sponsored: false },
-  { id: "tz-fuel",  segmentId: "seg-nutrition",  line: "How much should you actually eat on the run?", flowId: "flow-nutrition", sponsored: false },
-  { id: "tz-watch", segmentId: "seg-montre",     line: "Comparing 3 GPS watches?", flowId: "flow-montre-compare", sponsored: false },
-  { id: "tz-plan",  segmentId: "seg-plan",       line: "Want the 8-week plan in 20 seconds?", flowId: "flow-summarize-plan", sponsored: false },
-  { id: "tz-find",  segmentId: "seg-conclusion", line: "Ready to find your first pair of shoes?", flowId: "flow-recommend-shoes", sponsored: false }
+  { id: "tz-shoe",  segmentId: "seg-materiel",   line: "Pas sûr de votre chaussure de trail ? Saltus peut aider.", flowId: "flow-chaussure-sponsored", sponsored: true },
+  { id: "tz-dplus", segmentId: "seg-denivele",   line: "Le « D+ » revient souvent — je vous l'explique en une ligne ?", flowId: "flow-dplus", sponsored: false },
+  { id: "tz-fuel",  segmentId: "seg-nutrition",  line: "Combien faut-il vraiment manger en course ?", flowId: "flow-nutrition", sponsored: false },
+  { id: "tz-watch", segmentId: "seg-montre",     line: "On compare les 3 montres GPS ?", flowId: "flow-montre-compare", sponsored: false },
+  { id: "tz-plan",  segmentId: "seg-plan",       line: "Le plan de 8 semaines en 20 secondes ?", flowId: "flow-summarize-plan", sponsored: false },
+  { id: "tz-find",  segmentId: "seg-conclusion", line: "Prêt à trouver votre première paire ?", flowId: "flow-recommend-shoes", sponsored: false }
 ];

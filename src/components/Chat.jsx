@@ -1,15 +1,15 @@
 /* ============================================================
-   Chat.jsx — shared conversation engine (PRD §7.0.1, §7.5)
-   Conversation-first surface used by the docked agent AND the N5
-   immersive flows. Agent/reader bubbles, quick replies, typing
-   indicator, product cards inline in the thread.
+   Chat.jsx — moteur de conversation partagé (PRD §7.0.1, §7.5)
+   Surface conversation-first utilisée par l'agent ancré ET par les flows
+   immersifs N5. Bulles agent/lecteur, réponses rapides, indicateur de
+   frappe, cartes produit tissées dans le fil.
    ============================================================ */
 import { useState, useRef, useEffect, Fragment } from "react";
 import { DEMO } from "../data/index.js";
 import { AgentMark } from "./AgentMark.jsx";
 import { SponsoredFrame } from "./SponsoredFrame.jsx";
 
-// ---- build a conversation node from a scripted FLOW (Annexe C) ----
+// ---- construit un nœud de conversation depuis un FLOW scripté (Annexe C) ----
 export function flowToNode(id) {
   const f = DEMO.FLOWS[id];
   if (!f) return null;
@@ -26,25 +26,27 @@ export function flowToNode(id) {
 }
 export const convResolver = (kind) => (id) => (DEMO.CONV[kind] || {})[id];
 
-// ---- presentational ----
+// ---- présentation ----
 function MarkAvatar() {
   return <span className="chat-av"><AgentMark size={13} color="#fff" /></span>;
 }
 
 export function CompareCards({ ids }) {
   const offers = ids.map((id) => DEMO.OFFERS[id]).filter(Boolean);
-  const rows = [["price", "Price"], ["battery", "Battery"], ["weight", "Weight"], ["gps", "GPS"]];
+  const rows = [["price", "Prix"], ["battery", "Autonomie"], ["weight", "Poids"], ["gps", "GPS"]];
   return (
     <div className="chat-compare">
       {offers.map((o) => (
         <div key={o.offerId} className="cc-col">
-          <div className="cc-media" style={{ background: `linear-gradient(135deg, ${o.swatch[0]}, ${o.swatch[1]})` }}>
-            <i className="ph-fill ph-watch" style={{ fontSize: 24, color: "rgba(255,255,255,.92)" }}></i>
+          <div className="cc-media" style={{ background: `linear-gradient(135deg, ${o.swatch[0]}, ${o.swatch[1]})`, overflow: "hidden" }}>
+            {o.photo
+              ? <img src={o.photo} alt={o.headline} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              : <i className="ph-fill ph-watch" style={{ fontSize: 24, color: "rgba(255,255,255,.92)" }}></i>}
           </div>
           <div className="cc-name">{o.headline}</div>
           <div className="cc-label">{o.kind === "sponsored"
-            ? <span className="cc-spon"><i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsored</span>
-            : <span className="cc-edit">Editorial</span>}</div>
+            ? <span className="cc-spon"><i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsorisé</span>
+            : <span className="cc-edit">Éditorial</span>}</div>
           <dl className="cc-specs">
             {rows.map(([k, lbl]) => (<div key={k}><dt>{lbl}</dt><dd>{o.specs[k]}</dd></div>))}
           </dl>
@@ -104,40 +106,40 @@ function Composer({ onSend, disabled }) {
         className="chat-input"
         value={v}
         onChange={(e) => setV(e.target.value)}
-        placeholder="Ask the companion anything…"
-        aria-label="Message the companion"
+        placeholder="Demandez ce que vous voulez au compagnon…"
+        aria-label="Message au compagnon"
       />
-      <button type="submit" className="chat-send" disabled={!v.trim() || disabled} aria-label="Send">
+      <button type="submit" className="chat-send" disabled={!v.trim() || disabled} aria-label="Envoyer">
         <i className="ph-fill ph-arrow-up" style={{ fontSize: 16 }}></i>
       </button>
     </form>
   );
 }
 
-// ---- free-text intent matching (scripted demo mode) ----
+// ---- correspondance d'intention en texte libre (mode démo scripté) ----
 function matchIntent(text) {
   const t = text.toLowerCase();
   for (const id in DEMO.TERMS) {
     const s = DEMO.TERMS[id].surface.toLowerCase();
-    if (s.length > 2 && t.includes(s)) return { flow: DEMO.TERMS[id].flowId };
+    if (s.length > 3 && t.includes(s)) return { flow: DEMO.TERMS[id].flowId };
   }
-  if (/(shoe|chaussure|sneaker|footwear|find.*pair)/.test(t)) return { immersive: "finder", flowRef: "flow-recommend-shoes" };
-  if (/(watch|montre|gps|compare|comparer|tracker)/.test(t)) return { immersive: "comparator", flowRef: "flow-montre-compare" };
-  if (/(plan|week|training|progress|schedule|build up)/.test(t)) return { flow: "flow-summarize-plan" };
-  if (/(eat|nutrition|gel|fuel|food|snack|hydrat|water|drink|flask)/.test(t)) return { flow: "flow-softflasks" };
-  if (/(d\+|deniv|elevation|climb|vert|hill|uphill)/.test(t)) return { flow: "flow-dplus" };
-  if (/(pole|baton|stick)/.test(t)) return { flow: "flow-poles" };
-  if (/(vo2|fitness|aerobic|cardio fit)/.test(t)) return { flow: "flow-vo2max" };
+  if (/(chaussure|shoe|basket|paire|chaussant)/.test(t)) return { immersive: "finder", flowRef: "flow-recommend-shoes" };
+  if (/(montre|watch|gps|comparer|compare|tracker)/.test(t)) return { immersive: "comparator", flowRef: "flow-montre-compare" };
+  if (/(plan|semaine|entra[îi]n|programme|progress|prépar|prepar)/.test(t)) return { flow: "flow-summarize-plan" };
+  if (/(mang|nutrition|gel|ravito|aliment|barre|hydrat|boire|\beau\b|flasque)/.test(t)) return { flow: "flow-nutrition" };
+  if (/(d\+|déniv|deniv|dénivelé|denivele|mont[ée]e|montee|grimp|c[ôo]te|vertical)/.test(t)) return { flow: "flow-dplus" };
+  if (/(b[âa]ton|pole|stick)/.test(t)) return { flow: "flow-poles" };
+  if (/(vo2|aérobie|aerobie)/.test(t)) return { flow: "flow-vo2max" };
   return null;
 }
 
 const FALLBACK_OPTIONS = [
-  { label: "Find my shoe", immersive: "finder", flowRef: "flow-recommend-shoes" },
-  { label: "Compare GPS watches", immersive: "comparator", flowRef: "flow-montre-compare" },
-  { label: "What's D+?", flow: "flow-dplus" }
+  { label: "Trouver ma chaussure", immersive: "finder", flowRef: "flow-recommend-shoes" },
+  { label: "Comparer les montres GPS", immersive: "comparator", flowRef: "flow-montre-compare" },
+  { label: "C'est quoi le D+ ?", flow: "flow-dplus" }
 ];
 
-// ---- the engine ----
+// ---- le moteur ----
 export function Conversation({ resolve, startId, store }) {
   const reduced = store.getState().reducedMotion;
   const [msgs, setMsgs] = useState([]);
@@ -206,7 +208,7 @@ export function Conversation({ resolve, startId, store }) {
     }
   };
 
-  // ---- free-text input ----
+  // ---- entrée texte libre ----
   const onSend = (text) => {
     setOptions(null);
     push({ role: "user", text });
@@ -218,12 +220,12 @@ export function Conversation({ resolve, startId, store }) {
       if (!alive.current) return;
       setTyping(false);
       if (!m) {
-        push({ role: "agent", text: "I'm in scripted demo mode, so I'm best on the trail kit, climbs (D+), nutrition, the GPS watches, or finding your shoe. Want one of these?" });
+        push({ role: "agent", text: "Je suis en mode démo scripté, donc je suis au mieux sur le matériel, les montées (D+), la nutrition, les montres GPS, ou pour trouver votre chaussure. Vous voulez l'un de ces sujets ?" });
         timers.current.push(setTimeout(() => { if (alive.current) setOptions(FALLBACK_OPTIONS); }, reduced ? 0 : 250));
         return;
       }
       if (m.immersive) {
-        push({ role: "agent", text: m.immersive === "finder" ? "Let's find your shoe together — one moment." : "Let's compare those watches — one moment." });
+        push({ role: "agent", text: m.immersive === "finder" ? "Trouvons votre chaussure ensemble — un instant." : "Comparons ces montres — un instant." });
         timers.current.push(setTimeout(() => { if (alive.current) store.openImmersive({ kind: m.immersive, flowId: m.flowRef, segmentId: null }); }, reduced ? 0 : 620));
         return;
       }

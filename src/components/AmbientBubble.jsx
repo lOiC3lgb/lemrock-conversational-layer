@@ -11,9 +11,9 @@ import { DEMO } from "../data/index.js";
 import { AgentMark } from "./AgentMark.jsx";
 
 const SEMI_ENTRIES = [
-  { id: "e-watch", label: "Compare 3 GPS watches", icon: "ph-watch", flowId: "flow-montre-compare" },
-  { id: "e-plan", label: "Summarize the 8-week plan", icon: "ph-list-checks", flowId: "flow-summarize-plan" },
-  { id: "e-shoe", label: "Find your shoe", icon: "ph-sneaker-move", flowId: "flow-recommend-shoes" }
+  { id: "e-watch", label: "Comparer 3 montres GPS", icon: "ph-watch", flowId: "flow-montre-compare" },
+  { id: "e-plan", label: "Résumer le plan de 8 semaines", icon: "ph-list-checks", flowId: "flow-summarize-plan" },
+  { id: "e-shoe", label: "Trouve ta chaussure", icon: "ph-sneaker-move", flowId: "flow-recommend-shoes" }
 ];
 
 // ---- the contextual teaser card (revealed inside the morph) ----
@@ -21,15 +21,15 @@ function TeaserPanel({ teaser, store }) {
   return (
     <div className="bm-teaser">
       {teaser.sponsored && (
-        <span className="bm-spon"><i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsored</span>
+        <span className="bm-spon"><i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Sponsorisé</span>
       )}
       <div className="bm-teaser-head">
         <span className="bm-avatar"><AgentMark size={15} color="#fff" /></span>
         <button className="bm-line" onClick={() => store.acceptTeaser()}>{teaser.line}</button>
-        <button className="bm-x" onClick={() => store.dismissTeaser()} aria-label="Dismiss"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
+        <button className="bm-x" onClick={() => store.dismissTeaser()} aria-label="Ignorer"><i className="ph ph-x" style={{ fontSize: 13 }}></i></button>
       </div>
       <div className="bm-actions">
-        <button className="bm-go" onClick={() => store.acceptTeaser()}>Show me <i className="ph ph-arrow-right" style={{ fontSize: 12 }}></i></button>
+        <button className="bm-go" onClick={() => store.acceptTeaser()}>Voir <i className="ph ph-arrow-right" style={{ fontSize: 12 }}></i></button>
       </div>
     </div>
   );
@@ -42,10 +42,10 @@ function SemiPanel({ store, pickEntry }) {
       <div className="bm-semi-head">
         <span className="bm-avatar"><AgentMark size={13} color="#fff" /></span>
         <div className="bm-semi-titles">
-          <div className="t1">Companion</div>
-          <div className="t2">Here to help while you read</div>
+          <div className="t1">Compagnon</div>
+          <div className="t2">Là pour vous aider pendant la lecture</div>
         </div>
-        <button className="bm-x" onClick={() => store.setBubble("dormant")} aria-label="Close"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
+        <button className="bm-x" onClick={() => store.setBubble("dormant")} aria-label="Fermer"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
       </div>
       <div className="bm-semi-list">
         {SEMI_ENTRIES.map((e) => (
@@ -119,7 +119,7 @@ export function AmbientBubble({ state, store }) {
         style={isOpen && h != null ? { height: h } : undefined}
         role={collapsed ? "button" : "dialog"}
         tabIndex={collapsed ? 0 : -1}
-        aria-label={collapsed ? "Open reading companion" : "Companion"}
+        aria-label={collapsed ? "Ouvrir le compagnon de lecture" : "Compagnon"}
         aria-expanded={b === "semiOpen"}
         onClick={collapsed ? onLauncherClick : undefined}
         onKeyDown={collapsed ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onLauncherClick(); } } : undefined}

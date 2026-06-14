@@ -27,6 +27,7 @@ function AugmentedTerm({ termId, state, store }) {
       ref={ref}
       role="button"
       tabIndex={0}
+      data-term={termId}
       className={"aug-term" + (consulted ? " consulted" : "") + (open ? " open" : "")}
       onClick={act}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } }}
@@ -90,11 +91,11 @@ function SiteHeader() {
           <span className="site-vertical">Outdoor</span>
         </div>
         <nav className="site-nav">
-          <a href="#">Trail</a><a href="#">Gear</a><a href="#">Training</a><a href="#">Races</a>
+          <a href="#">Trail</a><a href="#">Matériel</a><a href="#">Entraînement</a><a href="#">Courses</a>
         </nav>
         <div className="site-actions">
-          <button className="site-search" aria-label="Search"><i className="ph ph-magnifying-glass" style={{ fontSize: 16 }}></i></button>
-          <button className="site-sub">Subscribe</button>
+          <button className="site-search" aria-label="Rechercher"><i className="ph ph-magnifying-glass" style={{ fontSize: 16 }}></i></button>
+          <button className="site-sub">S'abonner</button>
         </div>
       </div>
     </header>
@@ -120,16 +121,16 @@ export function Article({ state, store }) {
             <span>{A.readTime}</span>
           </div>
         </div>
-        <div className="art-hero" role="img" aria-label="Trail runner on a mountain ridge (placeholder)">
+        <div className="art-hero" role="img" aria-label="Coureur de trail sur une crête de montagne">
+          {A.heroPhoto && <img className="art-hero-img" src={A.heroPhoto} alt="" loading="eager" onError={(e) => { e.currentTarget.style.display = "none"; }} />}
           <div className="art-hero-grad"></div>
-          <i className="ph-fill ph-mountains art-hero-icon"></i>
-          <span className="art-hero-cap">Photo · trail ridge at golden hour</span>
+          <span className="art-hero-cap">{A.heroCaption}</span>
         </div>
         <div className="art-col art-body">
           {DEMO.SEGMENTS.map((seg) => <Segment key={seg.id} seg={seg} state={state} store={store} />)}
           <footer className="art-foot">
-            <div className="art-foot-badge"><i className="ph-fill ph-seal-check" style={{ fontSize: 16, color: "var(--success)" }}></i> This page meets Better Ads Standards — no proscribed formats, labelled sponsorship, opt-out respected.</div>
-            <div className="art-foot-meta">Lemrock Outdoor · Editorial. Conversational layer is a demonstrator.</div>
+            <div className="art-foot-badge"><i className="ph-fill ph-seal-check" style={{ fontSize: 16, color: "var(--success)" }}></i> Cette page respecte les Better Ads Standards — aucun format proscrit, sponsoring labellisé, opt-out respecté.</div>
+            <div className="art-foot-meta">Lemrock Outdoor · Éditorial. La couche conversationnelle est un démonstrateur.</div>
           </footer>
         </div>
       </main>
