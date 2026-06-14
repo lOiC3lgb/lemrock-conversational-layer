@@ -107,8 +107,11 @@
 .bubble-morph.is-reduced { animation: none; border-radius: 50%; }
 .bubble-morph.is-reduced.is-open { border-radius: 18px; }
 
-/* the orb's centred sparkle — fades out as the card opens */
-.bm-orb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity var(--t-base) var(--ease); }
+/* the orb's centred sparkle — fades out as the card opens.
+   pointer-events:none so the invisible (inset:0) sparkle never eats clicks
+   on the revealed teaser/menu buttons; the launcher click is handled by the
+   .bubble-morph container itself when collapsed. */
+.bm-orb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity var(--t-base) var(--ease); pointer-events: none; }
 .bubble-morph.is-open .bm-orb { opacity: 0; }
 
 /* the card content — fades/reveals just after the shape has grown */

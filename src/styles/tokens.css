@@ -54,9 +54,9 @@
   --success: #1F9D55;
   --success-bg: #E7F6EC;
 
-  /* ---- glass (richer, more translucent) ---- */
-  --glass-bg: rgba(252,252,251,0.62);
-  --glass-bg-strong: rgba(252,252,251,0.78);
+  /* ---- glass (frosted but legible — opacity carries the contrast, blur stays cheap) ---- */
+  --glass-bg: rgba(252,252,251,0.82);
+  --glass-bg-strong: rgba(252,252,251,0.93);
   --glass-border: rgba(255,255,255,0.6);
   --glass-stroke: rgba(20,20,18,0.07);
   --glass-sheen: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 42%);

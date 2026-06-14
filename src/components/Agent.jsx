@@ -124,7 +124,7 @@ export function LexicalPopover({ state, store }) {
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
         <AgentMark size={14} color="var(--accent)" />
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase", color: "var(--ink-3)" }}>{term.surface}</span>
-        <button onClick={() => store.closeLexical()} style={{ ...iconBtn, marginLeft: "auto" }} aria-label="Close"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
+        <button onClick={() => store.closeLexical()} style={{ ...iconBtn, marginLeft: "auto" }} aria-label="Fermer"><i className="ph ph-x" style={{ fontSize: 14 }}></i></button>
       </div>
       <div style={{ fontSize: 13.5, lineHeight: 1.5, color: "var(--ink-2)" }}>{flow.message}</div>
       {offer && (
