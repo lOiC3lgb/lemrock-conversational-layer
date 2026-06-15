@@ -52,15 +52,14 @@ export function OfferMedia({ offer, h }) {
 
 export function SponsoredLabel({ offer }) {
   if (offer.kind !== "sponsored") return null;
+  // discreet inline label (no pill / no tag) — still clearly identifiable
   return (
     <span style={{
       display: "inline-flex", alignItems: "center", gap: 5,
-      fontFamily: "var(--font-agent)", fontSize: 10.5, fontWeight: 700, letterSpacing: ".06em",
-      textTransform: "uppercase", color: "var(--sponsored-fg)",
-      background: "var(--sponsored-bg)", border: "1px solid var(--sponsored-line)",
-      padding: "2px 8px", borderRadius: "999px", whiteSpace: "nowrap"
+      fontFamily: "var(--font-agent)", fontSize: 10.5, fontWeight: 600, letterSpacing: ".07em",
+      textTransform: "uppercase", color: "var(--ink-3)", whiteSpace: "nowrap"
     }}>
-      <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 11 }} aria-hidden="true"></i>
+      <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 11, color: "var(--sponsored-fg)" }} aria-hidden="true"></i>
       Sponsorisé · {offer.brand}
     </span>
   );

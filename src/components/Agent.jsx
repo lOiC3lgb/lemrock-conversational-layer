@@ -69,7 +69,7 @@ export function AgentPanel({ state, store }) {
             <i className="ph ph-x" style={{ fontSize: 16 }}></i>
           </button>
         </header>
-        <Conversation resolve={flowToNode} startId={a.flowId} store={store} key={a.flowId} />
+        <Conversation resolve={flowToNode} startId={a.flowId} initialQuery={a.query} store={store} key={a.flowId || a.query} />
       </div>
     </div>
   );

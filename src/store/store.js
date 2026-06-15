@@ -167,6 +167,12 @@ function createStore() {
     },
     closeAgent() { set({ agent: null }); },
 
+    // open the docked agent on a free-text query (from the bubble's "write" field)
+    openAgentQuery(text) {
+      set({ agent: { query: text, triggerSource: "semi" }, lexical: null, bubble: "dormant", activeLevelBadge: "N2" });
+      emit("agent.open", { triggerSource: "semi" });
+    },
+
     // ---- N3 modules ----
     moduleShown(moduleId, type, segmentId) {
       if (state.shownModules[moduleId]) return;

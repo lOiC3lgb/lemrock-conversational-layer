@@ -37,6 +37,8 @@ function TeaserPanel({ teaser, store }) {
 
 // ---- the compact shortcut menu (revealed inside the morph) ----
 function SemiPanel({ store, pickEntry }) {
+  const [v, setV] = useState("");
+  const submit = (e) => { e.preventDefault(); const t = v.trim(); if (!t) return; setV(""); store.openAgentQuery(t); };
   return (
     <div className="bm-semi">
       <div className="bm-semi-head">
@@ -56,6 +58,10 @@ function SemiPanel({ store, pickEntry }) {
           </button>
         ))}
       </div>
+      <form className="bm-ask" onSubmit={submit}>
+        <input className="bm-ask-input" value={v} onChange={(e) => setV(e.target.value)} placeholder="Écrire au compagnon…" aria-label="Écrire au compagnon" />
+        <button type="submit" className="bm-ask-send" disabled={!v.trim()} aria-label="Envoyer"><i className="ph-fill ph-arrow-up" style={{ fontSize: 14 }}></i></button>
+      </form>
     </div>
   );
 }

@@ -53,8 +53,8 @@ export function ContextualModule({ module, segmentId, state, store }) {
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--ink-3)" }}>Compagnon · cette section</span>
           {hasSponsored && (
-            <span style={{ marginLeft: "auto", fontSize: 9.5, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--sponsored-fg)", background: "var(--sponsored-bg)", border: "1px solid var(--sponsored-line)", padding: "1px 7px", borderRadius: "999px", display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10 }}></i> Inclut du sponsorisé
+            <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: "var(--ink-3)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <i className="ph-fill ph-megaphone-simple" style={{ fontSize: 10, color: "var(--sponsored-fg)" }}></i> Inclut du sponsorisé
             </span>
           )}
         </div>
@@ -72,14 +72,18 @@ export function ContextualModule({ module, segmentId, state, store }) {
           <span className="n3-go"><i className="ph ph-arrow-right" style={{ fontSize: 16 }}></i></span>
         </button>
 
-        {/* preview strip for compare/recommend */}
+        {/* preview legend for compare — small product thumbnails, NOT clickable chips */}
         {offers.length > 0 && module.type === "compare" && (
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <div style={{ display: "flex", gap: 18, marginTop: 13, paddingLeft: 2, flexWrap: "wrap" }} aria-hidden="true">
             {offers.map((o) => (
-              <div key={o.offerId} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", border: "1px solid var(--border)", borderRadius: "10px", background: "var(--surface)", minWidth: 0 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: `linear-gradient(135deg, ${o.swatch[0]}, ${o.swatch[1]})`, flexShrink: 0 }}></span>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--ink-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.brand}</span>
-                {o.kind === "sponsored" && <i className="ph-fill ph-megaphone-simple" title="Sponsored" style={{ fontSize: 11, color: "var(--sponsored-fg)", marginLeft: "auto" }}></i>}
+              <div key={o.offerId} style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0, cursor: "default" }}>
+                <span style={{ width: 22, height: 22, borderRadius: 6, overflow: "hidden", flexShrink: 0, background: `linear-gradient(135deg, ${o.swatch[0]}, ${o.swatch[1]})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {o.photo
+                    ? <img src={o.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                    : <i className="ph ph-watch" style={{ fontSize: 12, color: "rgba(255,255,255,.9)" }}></i>}
+                </span>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--ink-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.brand}</span>
+                {o.kind === "sponsored" && <i className="ph-fill ph-megaphone-simple" title="Sponsorisé" style={{ fontSize: 10, color: "var(--sponsored-fg)" }}></i>}
               </div>
             ))}
           </div>

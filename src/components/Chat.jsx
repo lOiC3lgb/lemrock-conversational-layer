@@ -97,21 +97,41 @@ function QuickReplies({ options, onPick }) {
   );
 }
 
+// standard AI prompt block — textarea on top, tools row below (attach / voice / send)
 function Composer({ onSend, disabled }) {
   const [v, setV] = useState("");
-  const submit = () => { const t = v.trim(); if (!t) return; setV(""); onSend(t); };
+  const taRef = useRef(null);
+  const grow = (el) => { el.style.height = "auto"; el.style.height = Math.min(132, el.scrollHeight) + "px"; };
+  const submit = () => {
+    const t = v.trim(); if (!t) return;
+    setV(""); if (taRef.current) taRef.current.style.height = "auto";
+    onSend(t);
+  };
   return (
     <form className="chat-composer" onSubmit={(e) => { e.preventDefault(); submit(); }}>
-      <input
+      <textarea
+        ref={taRef}
         className="chat-input"
+        rows={1}
         value={v}
-        onChange={(e) => setV(e.target.value)}
-        placeholder="Demandez ce que vous voulez au compagnon…"
+        onChange={(e) => { setV(e.target.value); grow(e.target); }}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
+        placeholder="Écrire au compagnon…"
         aria-label="Message au compagnon"
       />
-      <button type="submit" className="chat-send" disabled={!v.trim() || disabled} aria-label="Envoyer">
-        <i className="ph-fill ph-arrow-up" style={{ fontSize: 16 }}></i>
-      </button>
+      <div className="chat-tools">
+        <button type="button" className="cc-tool" aria-label="Ajouter une pièce jointe" title="Ajouter une pièce jointe">
+          <i className="ph ph-plus" style={{ fontSize: 17 }}></i>
+        </button>
+        <div className="chat-tools-right">
+          <button type="button" className="cc-tool" aria-label="Dictée vocale" title="Dictée vocale">
+            <i className="ph ph-microphone" style={{ fontSize: 16 }}></i>
+          </button>
+          <button type="submit" className="chat-send" disabled={!v.trim() || disabled} aria-label="Envoyer">
+            <i className="ph-fill ph-arrow-up" style={{ fontSize: 16 }}></i>
+          </button>
+        </div>
+      </div>
     </form>
   );
 }
@@ -140,7 +160,7 @@ const FALLBACK_OPTIONS = [
 ];
 
 // ---- le moteur ----
-export function Conversation({ resolve, startId, store }) {
+export function Conversation({ resolve, startId, initialQuery, store }) {
   const reduced = store.getState().reducedMotion;
   const [msgs, setMsgs] = useState([]);
   const [typing, setTyping] = useState(false);
@@ -184,9 +204,10 @@ export function Conversation({ resolve, startId, store }) {
   useEffect(() => {
     alive.current = true;
     setMsgs([]); setOptions(null); setTyping(false);
-    playNode(startId);
+    if (initialQuery) onSend(initialQuery);   // opened via the bubble's free-text field
+    else playNode(startId);
     return () => { alive.current = false; clearTimers(); };
-  }, [startId]);
+  }, [startId, initialQuery]);
 
   const advance = (opt) => {
     setOptions(null);
