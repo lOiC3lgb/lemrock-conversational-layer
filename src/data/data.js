@@ -274,7 +274,7 @@ export const CONFIG = {
     maxSolicitationsPerSession: 4,
     cooldownBetweenSolicitations: 6000,   // ms
     scrollAwakeThreshold: 0.18,           // fraction de l'article scrollée
-    dwellAwakeMs: 1400,
+    dwellAwakeMs: 650,                    // apparition quasi-instantanée à la pause de scroll
     moduleViewportThreshold: 0.6,
     nativeDensityCap: 0.30
   }
@@ -288,4 +288,12 @@ export const TEASERS = [
   { id: "tz-watch", segmentId: "seg-montre",     line: "On compare les 3 montres GPS ?", flowId: "flow-montre-compare", sponsored: false },
   { id: "tz-plan",  segmentId: "seg-plan",       line: "Le plan de 8 semaines en 20 secondes ?", flowId: "flow-summarize-plan", sponsored: false },
   { id: "tz-find",  segmentId: "seg-conclusion", line: "Prêt à trouver votre première paire ?", flowId: "flow-recommend-shoes", sponsored: false }
+];
+
+// N2' — teasers "média" : la bulle morphe au scroll en lien vers un article / une vidéo.
+// (a `thumb` => rendu en carte média ; sinon teaser ligne classique.)
+export const MEDIA_TEASERS = [
+  { id: "mz-watch", segmentId: "seg-montre", kind: "video", source: "Terrain · Vidéo", title: "Test terrain : 3 montres GPS comparées", meta: "4:12", thumb: IMG("photo-1508685096489-7aacd43bd3b1", 480), flowId: "flow-montre-compare", sponsored: false },
+  { id: "mz-dplus", segmentId: "seg-denivele", kind: "article", source: "Terrain · Guide", title: "Bien lire le D+ et doser l'effort en montée", meta: "5 min", thumb: IMG("photo-1551632811-561732d1e306", 480), flowId: "flow-dplus", sponsored: false },
+  { id: "mz-plan", segmentId: "seg-plan", kind: "article", source: "Terrain · Plan", title: "Le plan de 8 semaines, semaine par semaine", meta: "6 min", thumb: IMG("photo-1486218119243-13883505764c", 480), flowId: "flow-summarize-plan", sponsored: false }
 ];

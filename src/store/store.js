@@ -219,6 +219,13 @@ function createStore() {
       set({ agent: null, immersive: null, bubble: "teaser", teaser: t, activeLevelBadge: "N2" });
       emit("teaser.shown", { teaserId: t.id, segmentId: t.segmentId, sponsored: t.sponsored });
     },
+    // N2' — surface a "media" teaser (the bubble morphs into an article/video link)
+    demoMediaTeaser() {
+      const t = (DEMO.MEDIA_TEASERS && (DEMO.MEDIA_TEASERS.find((x) => x.id === "mz-watch") || DEMO.MEDIA_TEASERS[0]));
+      if (!t) return;
+      set({ agent: null, immersive: null, bubble: "teaser", teaser: t, activeLevelBadge: "N2" });
+      emit("teaser.shown", { teaserId: t.id, segmentId: t.segmentId, sponsored: !!t.sponsored });
+    },
     flashLevel(level) { set({ activeLevelBadge: level }); },
 
     clearBadge() { set({ activeLevelBadge: null }); }

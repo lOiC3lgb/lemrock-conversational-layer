@@ -34,8 +34,9 @@ export function App() {
   // ---- N2 governance signals: scroll-threshold awake + precise dwell teaser ----
   useEffect(() => {
     const scroller = document.scrollingElement || document.documentElement;
-    const segTeaser = {};
+    const segTeaser = {}, segMedia = {};
     DEMO.TEASERS.forEach((tz) => { segTeaser[tz.segmentId] = tz; });
+    (DEMO.MEDIA_TEASERS || []).forEach((tz) => { segMedia[tz.segmentId] = tz; });
     let idle = null;
 
     // the segment crossing the reader's "eye line" (≈40% down the viewport) —
@@ -66,7 +67,8 @@ export function App() {
         if (s.agent || s.immersive || s.optedOut || !s.levels.N2) return;
         if (s.bubble !== "dormant" && s.bubble !== "awake") return;
         const seg = activeSegment();
-        const tz = seg && segTeaser[seg];
+        // prefer a media teaser (N2') where the section has one, else the plain line
+        const tz = seg && (segMedia[seg] || segTeaser[seg]);
         if (tz && !s.shownTeasers[tz.id]) store.surfaceTeaser(tz);
       }, store.getState().gov.dwellAwakeMs);
     };

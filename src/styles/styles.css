@@ -152,12 +152,25 @@
 .bm-spon { align-self: flex-start; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
 .bm-spon i { color: var(--sponsored-fg); }
 /* free-text "write" field inside the bubble's shortcut menu */
-.bm-ask { display: flex; align-items: center; gap: 8px; margin: 4px 10px 12px; padding: 6px 6px 6px 14px; border: 1px solid var(--glass-stroke); border-radius: 999px; background: rgba(255,255,255,0.7); }
+.bm-ask { display: flex; align-items: center; gap: 8px; margin: 8px 14px 16px; padding: 7px 8px 7px 17px; border: 1px solid var(--glass-stroke); border-radius: 999px; background: rgba(255,255,255,0.7); }
 .bm-ask:focus-within { border-color: var(--accent-ring); box-shadow: 0 0 0 3px var(--accent-wash); }
 .bm-ask-input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-family: var(--font-agent); font-size: 13px; color: var(--ink-1); }
 .bm-ask-input::placeholder { color: var(--ink-4); }
-.bm-ask-send { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.bm-ask-send { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .bm-ask-send:disabled { opacity: .4; cursor: default; }
+
+/* N2' media teaser card (article / video link inside the morph) */
+.bm-media { width: 320px; }
+.bm-media-thumb { position: relative; height: 152px; background: linear-gradient(135deg, #2f3b46, #6d7e7a); overflow: hidden; }
+.bm-media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bm-media-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.92); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; color: var(--ink-1); box-shadow: var(--shadow-2); }
+.bm-media-meta { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-agent); font-size: 10.5px; font-weight: 600; color: #fff; background: rgba(0,0,0,0.5); padding: 3px 9px; border-radius: 999px; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.bm-media-x { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(0,0,0,0.42); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.bm-media-body { padding: 11px 14px 14px; }
+.bm-media-src { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-agent); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
+.bm-media-title { display: block; width: 100%; text-align: left; border: none; background: transparent; padding: 0; cursor: pointer; font-family: var(--font-agent); font-size: 14.5px; font-weight: 700; color: var(--ink-1); line-height: 1.3; margin: 6px 0 0; transition: color var(--t-fast); }
+.bm-media-title:hover { color: var(--accent); }
+.bm-media-cta { display: inline-flex; align-items: center; gap: 5px; margin-top: 11px; font-family: var(--font-agent); font-size: 12.5px; font-weight: 600; color: #fff; background: var(--accent); border: none; border-radius: 999px; padding: 7px 13px; cursor: pointer; }
 .bm-teaser-head { display: flex; align-items: flex-start; gap: 9px; }
 .bm-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .bm-line { flex: 1; text-align: left; border: none; background: transparent; cursor: pointer; padding: 0; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink-1); line-height: 1.35; }

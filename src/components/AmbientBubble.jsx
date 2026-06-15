@@ -16,8 +16,35 @@ const SEMI_ENTRIES = [
   { id: "e-shoe", label: "Trouve ta chaussure", icon: "ph-sneaker-move", flowId: "flow-recommend-shoes" }
 ];
 
+// ---- N2' media teaser card (the bubble morphs into an article / video link) ----
+function MediaTeaserPanel({ teaser, store }) {
+  const isVideo = teaser.kind === "video";
+  return (
+    <div className="bm-media">
+      <div className="bm-media-thumb">
+        <img src={teaser.thumb} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.opacity = 0; }} />
+        {isVideo && <span className="bm-media-play"><i className="ph-fill ph-play" style={{ fontSize: 18, marginLeft: 2 }}></i></span>}
+        {teaser.meta && (
+          <span className="bm-media-meta">
+            <i className={isVideo ? "ph-fill ph-play-circle" : "ph ph-article"} style={{ fontSize: 11 }}></i>{teaser.meta}
+          </span>
+        )}
+        <button className="bm-media-x" onClick={() => store.dismissTeaser()} aria-label="Ignorer"><i className="ph ph-x" style={{ fontSize: 12 }}></i></button>
+      </div>
+      <div className="bm-media-body">
+        <div className="bm-media-src"><AgentMark size={11} color="var(--accent)" /> {teaser.source}</div>
+        <button className="bm-media-title" onClick={() => store.acceptTeaser()}>{teaser.title}</button>
+        <button className="bm-media-cta" onClick={() => store.acceptTeaser()}>
+          {isVideo ? "Voir la vidéo" : "Lire l'article"} <i className="ph ph-arrow-right" style={{ fontSize: 12 }}></i>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ---- the contextual teaser card (revealed inside the morph) ----
 function TeaserPanel({ teaser, store }) {
+  if (teaser.thumb) return <MediaTeaserPanel teaser={teaser} store={store} />;
   return (
     <div className="bm-teaser">
       {teaser.sponsored && (

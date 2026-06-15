@@ -10,6 +10,7 @@ import { useEffect } from "react";
 const LEVELS = [
   { id: "N1", name: "Lexical" },
   { id: "N2", name: "Ambiant" },
+  { id: "N2'", name: "Ambiant média", base: "N2" },
   { id: "N3", name: "Contextuel" },
   { id: "N4", name: "Sponsorisé" },
   { id: "N5", name: "Immersif" }
@@ -58,6 +59,8 @@ export function ComplianceDock({ state, store }) {
       });
     } else if (level === "N2") {
       store.demoTeaser();
+    } else if (level === "N2'") {
+      store.demoMediaTeaser();
     } else if (level === "N3") {
       const el = document.querySelector('[data-seg="seg-montre"] .n3-module') || document.querySelector(".n3-module");
       scrollToEl(el, () => store.flashLevel("N3"));
@@ -77,7 +80,7 @@ export function ComplianceDock({ state, store }) {
               key={l.id}
               className="lj-chip"
               onClick={() => jump(l.id)}
-              disabled={!state.levels[l.id]}
+              disabled={!state.levels[l.base || l.id]}
               title={l.id + " · " + l.name}
               aria-label={"Déclencher " + l.id + " " + l.name}
             >
