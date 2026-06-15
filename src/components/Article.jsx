@@ -4,7 +4,7 @@
    Renders: site chrome, hero, segments, inline N1 terms, N3 modules,
    one inline N4 sponsored card.
    ============================================================ */
-import { useRef, Fragment } from "react";
+import { useRef, useEffect, Fragment } from "react";
 import { DEMO } from "../data/index.js";
 import { AgentMark } from "./AgentMark.jsx";
 import { SponsoredFrame } from "./SponsoredFrame.jsx";
@@ -50,7 +50,7 @@ function Para({ text, state, store }) {
     last = m.index + m[0].length;
   }
   if (last < text.length) parts.push(text.slice(last));
-  return <p className="art-p">{parts}</p>;
+  return <p className="art-p" data-reveal>{parts}</p>;
 }
 
 function Segment({ seg, state, store }) {
@@ -62,13 +62,13 @@ function Segment({ seg, state, store }) {
 
   return (
     <section className="art-seg" data-seg={seg.id} data-screen-label={"Section · " + seg.id}>
-      {seg.title && <h2 className="art-h2">{seg.title}</h2>}
+      {seg.title && <h2 className="art-h2" data-reveal>{seg.title}</h2>}
       {seg.paras.map((p, i) => (
         <Fragment key={i}>
           <Para text={p} state={state} store={store} />
           {/* inline N4 sponsored surface, woven into the read */}
           {showInlineAd && i === 0 && (
-            <div className="art-inline-ad">
+            <div className="art-inline-ad" data-reveal>
               <SponsoredFrame offer={nutritionOffer} variant="inline"
                 onCta={() => store.openAgent({ flowId: "flow-summarize-plan", triggerSource: "cta", segmentId: seg.id })} />
             </div>
@@ -85,8 +85,8 @@ function SiteHeader() {
     <header className="site-head">
       <div className="site-head-inner">
         <div className="site-brand">
-          <span className="site-logo">L</span>
-          <span className="site-name">Lemrock</span>
+          <span className="site-logo">T</span>
+          <span className="site-name">Terrain</span>
           <span className="site-sep">/</span>
           <span className="site-vertical">Outdoor</span>
         </div>
@@ -104,11 +104,24 @@ function SiteHeader() {
 
 export function Article({ state, store }) {
   const A = DEMO.ARTICLE;
+
+  // subtle scroll-reveal for editorial content (fade-up as it enters view)
+  useEffect(() => {
+    const reduced = document.documentElement.getAttribute("data-reduced") === "on";
+    const els = document.querySelectorAll(".article [data-reveal]");
+    if (reduced) { els.forEach((el) => el.classList.add("is-in")); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -7% 0px" });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div className="article-scroll">
       <SiteHeader />
       <main className="article" data-screen-label="Article">
-        <div className="art-col">
+        <div className="art-col art-head">
           <div className="art-kicker">{A.kicker}</div>
           <h1 className="art-h1">{A.title}</h1>
           <p className="art-dek">{A.dek}</p>
@@ -121,7 +134,7 @@ export function Article({ state, store }) {
             <span>{A.readTime}</span>
           </div>
         </div>
-        <div className="art-hero" role="img" aria-label="Coureur de trail sur une crête de montagne">
+        <div className="art-hero" data-reveal role="img" aria-label="Coureur de trail sur un sentier de campagne">
           {A.heroPhoto && <img className="art-hero-img" src={A.heroPhoto} alt="" loading="eager" onError={(e) => { e.currentTarget.style.display = "none"; }} />}
           <div className="art-hero-grad"></div>
           <span className="art-hero-cap">{A.heroCaption}</span>
@@ -130,7 +143,7 @@ export function Article({ state, store }) {
           {DEMO.SEGMENTS.map((seg) => <Segment key={seg.id} seg={seg} state={state} store={store} />)}
           <footer className="art-foot">
             <div className="art-foot-badge"><i className="ph-fill ph-seal-check" style={{ fontSize: 16, color: "var(--success)" }}></i> Cette page respecte les Better Ads Standards — aucun format proscrit, sponsoring labellisé, opt-out respecté.</div>
-            <div className="art-foot-meta">Lemrock Outdoor · Éditorial. La couche conversationnelle est un démonstrateur.</div>
+            <div className="art-foot-meta">Terrain · Éditorial. La couche conversationnelle est un démonstrateur.</div>
           </footer>
         </div>
       </main>

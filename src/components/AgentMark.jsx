@@ -1,6 +1,6 @@
 /* ============================================================
    AgentMark.jsx — the companion brand mark + small avatar
-   The exact Lemrock avatar (src/assets/lemrock-avatar.svg), inlined so it
+   The supplied avatar (src/assets/companion-avatar.svg), inlined so it
    can be filled with `color` and reads on any background (white on the
    dark orb, dark on light). Shared leaf so every surface uses one mark.
    ============================================================ */

@@ -256,7 +256,7 @@ export const ARTICLE = {
   kicker: "Trail running · Pour bien débuter",
   title: "Bien débuter le trail sans se cramer dès les premières montées",
   dek: "Moins de matériel qu'on ne croit, un chiffre qui compte plus que la distance, et un plan de huit semaines qui ne vous brisera pas.",
-  author: "Lemrock Outdoors",
+  author: "La rédaction",
   date: "Juin 2026",
   readTime: "7 min de lecture",
   heroPhoto: IMG("photo-1486218119243-13883505764c", 1280),
